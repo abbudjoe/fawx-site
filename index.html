@@ -567,6 +567,76 @@
       margin-right: auto;
     }
 
+    /* ── SELF-IMPROVING ── */
+    .consensus-section {
+      background: var(--cream);
+    }
+
+    .consensus-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .consensus-card {
+      background: var(--white);
+      border: 1px solid var(--orange-100);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .consensus-card {
+        border-color: #44403C;
+      }
+    }
+
+    .consensus-card .icon {
+      font-size: 1.8rem;
+      margin-bottom: 12px;
+      display: block;
+    }
+
+    .consensus-card h3 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .consensus-card p {
+      font-size: 0.92rem;
+      color: var(--charcoal-muted);
+      line-height: 1.6;
+    }
+
+    .consensus-diagram {
+      background: var(--terminal-bg);
+      border-radius: var(--radius-lg);
+      padding: 28px 32px;
+      max-width: 640px;
+      margin: 36px auto 0;
+      box-shadow: var(--shadow-md);
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      color: var(--terminal-text);
+    }
+
+    .consensus-diagram .t-label {
+      color: var(--terminal-yellow);
+      font-weight: 700;
+    }
+
+    .consensus-diagram .t-score {
+      color: var(--terminal-green);
+    }
+
+    .consensus-diagram .t-fail {
+      color: #F38BA8;
+    }
+
     /* ── GETTING STARTED ── */
     .getting-started {
       background: var(--cream-dark);
@@ -844,6 +914,7 @@
         <li><a href="#features">Features</a></li>
         <li><a href="#install">Install</a></li>
         <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#consensus">Proof of Fitness</a></li>
         <li><a href="https://github.com/fawxai/fawx" class="nav-gh">
           <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
           GitHub
@@ -1000,6 +1071,52 @@
           </div>
         </div>
         <p class="arch-caption">The agent can modify its own skills and behavior, but the safety rules that govern it are compiled into the binary and can never be changed at runtime.</p>
+      </div>
+    </section>
+
+    <!-- ── SELF-IMPROVING ── -->
+    <section id="consensus" class="consensus-section">
+      <div class="container">
+        <p class="section-label">Proof of Fitness</p>
+        <h2 class="section-title">An agent that improves itself.</h2>
+        <p class="section-desc">Fawx runs competing agents against the same problem, each with a different strategy. The best solution wins through objective evaluation, and every result is recorded in a cryptographic chain so you can verify what changed and why.</p>
+
+        <div class="consensus-grid">
+          <div class="consensus-card">
+            <span class="icon">🏁</span>
+            <h3>Competing Strategies</h3>
+            <p>Each experiment spawns multiple agents with different approaches: conservative, aggressive, creative. They work independently on the same problem, so you get genuine diversity in the solutions.</p>
+          </div>
+
+          <div class="consensus-card">
+            <span class="icon">⚖️</span>
+            <h3>Cross-Evaluation</h3>
+            <p>Agents evaluate each other's work, not their own. Build it, test it, measure it. The scoring is objective because it's based on real outcomes: does the code compile, do the tests pass, did the test count go up.</p>
+          </div>
+
+          <div class="consensus-card">
+            <span class="icon">🔗</span>
+            <h3>Tamper-Evident Chain</h3>
+            <p>Every experiment result is hashed and linked to the previous entry, like a blockchain but for fitness. You get a verifiable history of what was tried, what won, and what was rejected.</p>
+          </div>
+
+          <div class="consensus-card">
+            <span class="icon">🎯</span>
+            <h3>Goal-Agnostic</h3>
+            <p>The protocol works for any kind of experiment. Improve code quality, research API designs, fine-tune local models, optimize configurations. The framework runs the competition; you define what "better" means.</p>
+          </div>
+        </div>
+
+        <div class="consensus-diagram">
+          <div><span class="t-label">Signal:</span> missing test coverage in scoring module</div>
+          <div><span class="t-label">Hypothesis:</span> add unit tests for edge cases</div>
+          <div style="height:8px"></div>
+          <div><span class="t-muted">├─</span> Node 0 <span class="t-muted">(Conservative)</span> <span class="t-score">score: 0.72</span> <span class="t-muted">+3 tests</span></div>
+          <div><span class="t-muted">├─</span> Node 1 <span class="t-muted">(Aggressive)</span> <span class="t-score">score: 0.45</span> <span class="t-muted">+1 test, refactored</span></div>
+          <div><span class="t-muted">└─</span> Node 2 <span class="t-muted">(Creative)</span> <span class="t-fail">score: 0.00</span> <span class="t-muted">build failed</span></div>
+          <div style="height:8px"></div>
+          <div><span class="t-label">Decision:</span> <span class="t-score">ACCEPT</span> (Conservative) <span class="t-muted">chain entry #7</span></div>
+        </div>
       </div>
     </section>
 
