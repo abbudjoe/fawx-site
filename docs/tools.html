@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tools: Fawx Docs</title>
+  <meta name="description" content="The built-in tools Fawx can use: files, web, browser, git, shell, and more.">
+  <link rel="icon" type="image/png" href="/fawx-mono-nobg.png">
+  <link rel="apple-touch-icon" href="/fawx-new.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+    :root { --bg:#F5F0EB;--bg-raised:#EDE8E2;--bg-card:#FFFFFF;--border:rgba(0,0,0,0.08);--border-bright:rgba(0,0,0,0.15);--text:#1A1A1A;--text-dim:#5C5C5C;--text-faint:#8A8A8A;--accent:#D45E14;--accent-dim:rgba(212,94,20,0.08);--terminal-bg:#1E1E2E;--terminal-text:#CDD6F4;--font:'Outfit',-apple-system,BlinkMacSystemFont,sans-serif;--font-display:'Space Grotesk',-apple-system,BlinkMacSystemFont,sans-serif;--mono:'JetBrains Mono','SF Mono','Fira Code',monospace; }
+    html[data-theme="light"]{--bg:#F5F0EB;--bg-raised:#EDE8E2;--bg-card:#FFFFFF;--border:rgba(0,0,0,0.08);--border-bright:rgba(0,0,0,0.15);--text:#1A1A1A;--text-dim:#5C5C5C;--text-faint:#8A8A8A;--accent:#D45E14;--accent-dim:rgba(212,94,20,0.08)}
+    html[data-theme="light"] nav{background:rgba(245,240,235,0.85)}
+    html[data-theme="dark"]{--bg:#141210;--bg-raised:#1C1A17;--bg-card:#221F1C;--border:rgba(255,255,255,0.06);--border-bright:rgba(255,255,255,0.12);--text:#E8E2DB;--text-dim:#9C9590;--text-faint:#6B6560;--accent:#E8711A;--accent-dim:rgba(232,113,26,0.12)}
+    html[data-theme="dark"] nav{background:rgba(20,18,16,0.85)}
+    @media(prefers-color-scheme:dark){:root{--bg:#141210;--bg-raised:#1C1A17;--bg-card:#221F1C;--border:rgba(255,255,255,0.06);--border-bright:rgba(255,255,255,0.12);--text:#E8E2DB;--text-dim:#9C9590;--text-faint:#6B6560;--accent:#E8711A;--accent-dim:rgba(232,113,26,0.12)}nav{background:rgba(20,18,16,0.85)}}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(245,240,235,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-family:var(--mono);font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px}.nav-logo img{width:28px;height:28px}
+    .nav-links{display:flex;align-items:center;gap:36px;list-style:none}.nav-links a{text-decoration:none;color:var(--text-dim);font-size:0.88rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--text)}
+    .nav-cta{background:var(--text);color:var(--bg)!important;padding:8px 20px;border-radius:8px;font-size:0.85rem!important;font-weight:600!important;transition:opacity 0.2s}.nav-cta:hover{opacity:0.85;color:var(--bg)!important}
+    .theme-toggle{background:none;border:1px solid var(--border-bright);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--text-dim);transition:border-color 0.2s,color 0.2s}.theme-toggle:hover{border-color:var(--text-dim);color:var(--text)}
+
+    .doc-page{max-width:720px;margin:0 auto;padding:140px 32px 80px}
+    .doc-breadcrumb{font-family:var(--mono);font-size:0.75rem;color:var(--text-faint);margin-bottom:24px}.doc-breadcrumb a{color:var(--accent);text-decoration:none}.doc-breadcrumb a:hover{text-decoration:underline}
+    .doc-page h1{font-family:var(--font-display);font-size:2.4rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:12px}
+    .doc-page .doc-lead{font-size:1.1rem;color:var(--text-dim);line-height:1.7;margin-bottom:48px}
+    .doc-page h2{font-family:var(--font-display);font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;margin-top:48px;margin-bottom:16px;padding-top:24px;border-top:1px solid var(--border)}
+    .doc-page h2:first-of-type{border-top:none;padding-top:0}
+    .doc-page h3{font-size:1.05rem;font-weight:700;margin-top:32px;margin-bottom:8px}
+    .doc-page p{font-size:0.95rem;color:var(--text-dim);line-height:1.75;margin-bottom:16px}
+    .doc-page ul,.doc-page ol{padding-left:24px;margin-bottom:16px}
+    .doc-page li{font-size:0.95rem;color:var(--text-dim);line-height:1.75;margin-bottom:8px}
+    .doc-page li strong{color:var(--text)}
+    .doc-page code{font-family:var(--mono);font-size:0.85em;background:var(--accent-dim);padding:2px 6px;border-radius:4px}
+    .doc-page pre{background:var(--terminal-bg);border-radius:10px;padding:20px 24px;margin-bottom:20px;overflow-x:auto}
+    .doc-page pre code{background:none;padding:0;color:var(--terminal-text);font-size:0.82rem;line-height:1.7}
+    .doc-page .note{background:var(--accent-dim);border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:0.9rem;color:var(--text-dim);line-height:1.65}
+    .doc-page .note strong{color:var(--text)}
+
+    .tool-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:12px}
+    .tool-card h4{font-family:var(--mono);font-size:0.9rem;font-weight:700;margin-bottom:4px}
+    .tool-card p{margin-bottom:0;font-size:0.88rem}
+
+    footer{padding:48px 32px;border-top:1px solid var(--border)}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+    .footer-brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--text-dim)}.footer-brand img{width:22px;height:22px}
+    .footer-links{display:flex;gap:32px;list-style:none}.footer-links a{color:var(--text-faint);text-decoration:none;font-size:0.85rem;transition:color 0.2s}.footer-links a:hover{color:var(--text)}
+    .footer-copy{width:100%;text-align:center;margin-top:28px;padding-top:24px;border-top:1px solid var(--border);font-size:0.8rem;color:var(--text-faint)}
+    .doc-nav{display:flex;justify-content:space-between;margin-top:64px;padding-top:24px;border-top:1px solid var(--border)}.doc-nav a{font-size:0.88rem;color:var(--accent);text-decoration:none;font-weight:600}.doc-nav a:hover{text-decoration:underline}
+
+    @media(max-width:600px){.doc-page{padding:120px 20px 60px}.doc-page h1{font-size:1.8rem}.footer-inner{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+  <nav><div class="nav-inner"><a href="/" class="nav-logo"><img src="/fawx-mono-nobg.png" alt="Fawx"> fawx</a><ul class="nav-links"><li><a href="/#features">Features</a></li><li><a href="/#demo">Demo</a></li><li><a href="/docs/">Docs</a></li><li><a href="/about.html">About</a></li><li><a href="/download.html" class="nav-cta">Download</a></li><li><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><span class="theme-icon">☀</span></button></li></ul></div></nav>
+
+  <div class="doc-page">
+    <div class="doc-breadcrumb"><a href="/docs/">Docs</a> / Tools</div>
+    <h1>Tools</h1>
+    <p class="doc-lead">Fawx ships with 13+ built-in tools. The model calls them natively through provider function-calling APIs. No prompt engineering required.</p>
+
+    <h2>How tools work</h2>
+    <p>When the AI model decides it needs to take an action (read a file, search the web, run a command), it emits a structured tool call. Fawx executes the tool, checks permissions, and returns the result to the model. This can happen multiple times in a single response.</p>
+    <p>Tools are subject to the <a href="/docs/security.html" style="color:var(--accent)">capability-based permission system</a>. If a tool call falls outside the agent's boundaries, it receives a structured denial explaining what happened and why.</p>
+
+    <h2>Built-in tools</h2>
+
+    <h3>File system</h3>
+    <div class="tool-card">
+      <h4>read_file</h4>
+      <p>Read the contents of a file. Supports text files and common binary formats. Large files are chunked automatically.</p>
+    </div>
+    <div class="tool-card">
+      <h4>write_file</h4>
+      <p>Create or overwrite a file. Creates parent directories automatically.</p>
+    </div>
+    <div class="tool-card">
+      <h4>edit_file</h4>
+      <p>Make precise edits to a file by specifying the exact text to find and replace. Safer than full file writes for targeted changes.</p>
+    </div>
+    <div class="tool-card">
+      <h4>list_dir</h4>
+      <p>List the contents of a directory with file sizes and types.</p>
+    </div>
+
+    <h3>Shell</h3>
+    <div class="tool-card">
+      <h4>shell</h4>
+      <p>Execute shell commands. Supports background processes, timeouts, and working directory specification. Output is captured and returned to the model.</p>
+    </div>
+
+    <h3>Web</h3>
+    <div class="tool-card">
+      <h4>web_search</h4>
+      <p>Search the web using Brave Search. Returns titles, URLs, and snippets.</p>
+    </div>
+    <div class="tool-card">
+      <h4>web_fetch</h4>
+      <p>Fetch a URL and extract readable content as markdown or text. Handles HTML, PDFs, and other common formats.</p>
+    </div>
+    <div class="tool-card">
+      <h4>browser</h4>
+      <p>Control a headless browser for complex web interactions. Navigate, click, type, take screenshots, and extract page content.</p>
+    </div>
+
+    <h3>Git</h3>
+    <div class="tool-card">
+      <h4>git_status</h4>
+      <p>Check the current repository status: branch, staged changes, untracked files.</p>
+    </div>
+    <div class="tool-card">
+      <h4>git_diff</h4>
+      <p>View diffs for staged or unstaged changes, or between commits.</p>
+    </div>
+    <div class="tool-card">
+      <h4>git_commit</h4>
+      <p>Stage files and create commits with a message.</p>
+    </div>
+
+    <h3>Memory</h3>
+    <div class="tool-card">
+      <h4>memory_read</h4>
+      <p>Read from the agent's structured memory. Memories persist across sessions and are stored locally.</p>
+    </div>
+    <div class="tool-card">
+      <h4>memory_write</h4>
+      <p>Write observations and learnings to structured memory for future reference.</p>
+    </div>
+
+    <h2>WASM skills</h2>
+    <p>Beyond built-in tools, Fawx supports WASM skill plugins that add new capabilities. Skills are loaded at runtime, sandboxed, and cryptographically signed. See the <a href="/docs/skills.html" style="color:var(--accent)">Skills docs</a> for details.</p>
+
+    <h2>Tool calling flow</h2>
+    <p>A typical multi-step interaction:</p>
+    <ol>
+      <li>You ask Fawx to "find all TODO comments in the project and create a summary."</li>
+      <li>Fawx calls <code>shell</code> to run <code>grep -rn TODO src/</code></li>
+      <li>The results come back. Fawx calls <code>write_file</code> to create <code>TODO-summary.md</code></li>
+      <li>Fawx responds with a summary of what it found and where it saved the file.</li>
+    </ol>
+    <p>Each step is visible in the conversation. The model decides which tools to call, and Fawx handles execution, error recovery, and retries.</p>
+
+    <div class="doc-nav">
+      <a href="/docs/setup.html">← Setup</a>
+      <a href="/docs/skills.html">Skills →</a>
+    </div>
+  </div>
+
+  <footer><div class="footer-inner"><div class="footer-brand"><img src="/fawx-mono-nobg.png" alt="Fawx"> fawx</div><ul class="footer-links"><li><a href="/download.html">Download</a></li><li><a href="/docs/">Docs</a></li><li><a href="/about.html">About</a></li></ul></div><div class="footer-copy">&copy; 2026 Fawx AI. All rights reserved.</div></footer>
+
+  <script>
+    function toggleTheme(){var h=document.documentElement,c=h.getAttribute('data-theme'),i=document.querySelector('.theme-icon');if(c==='light'){h.setAttribute('data-theme','dark');i.textContent='☀';localStorage.setItem('fawx-theme','dark')}else{h.setAttribute('data-theme','light');i.textContent='☾';localStorage.setItem('fawx-theme','light')}}
+    (function(){var s=localStorage.getItem('fawx-theme'),i=document.querySelector('.theme-icon');if(s){document.documentElement.setAttribute('data-theme',s);i.textContent=s==='dark'?'☀':'☾'}else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches){document.documentElement.setAttribute('data-theme','dark');i.textContent='☀'}else{document.documentElement.setAttribute('data-theme','light');i.textContent='☾'}})();
+  </script>
+</body>
+</html>

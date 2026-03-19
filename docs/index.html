@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fawx Docs</title>
+  <meta name="description" content="Fawx documentation. Setup, tools, skills, fleet, and security.">
+  <link rel="icon" type="image/png" href="/fawx-mono-nobg.png">
+  <link rel="apple-touch-icon" href="/fawx-new.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+    :root {
+      --bg: #F5F0EB; --bg-raised: #EDE8E2; --bg-card: #FFFFFF;
+      --border: rgba(0,0,0,0.08); --border-bright: rgba(0,0,0,0.15);
+      --text: #1A1A1A; --text-dim: #5C5C5C; --text-faint: #8A8A8A;
+      --accent: #D45E14; --accent-dim: rgba(212,94,20,0.08);
+      --font: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    }
+
+    html[data-theme="light"] {
+      --bg: #F5F0EB; --bg-raised: #EDE8E2; --bg-card: #FFFFFF;
+      --border: rgba(0,0,0,0.08); --border-bright: rgba(0,0,0,0.15);
+      --text: #1A1A1A; --text-dim: #5C5C5C; --text-faint: #8A8A8A;
+      --accent: #D45E14; --accent-dim: rgba(212,94,20,0.08);
+    }
+    html[data-theme="light"] nav { background: rgba(245,240,235,0.85); }
+
+    html[data-theme="dark"] {
+      --bg: #141210; --bg-raised: #1C1A17; --bg-card: #221F1C;
+      --border: rgba(255,255,255,0.06); --border-bright: rgba(255,255,255,0.12);
+      --text: #E8E2DB; --text-dim: #9C9590; --text-faint: #6B6560;
+      --accent: #E8711A; --accent-dim: rgba(232,113,26,0.12);
+    }
+    html[data-theme="dark"] nav { background: rgba(20,18,16,0.85); }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141210; --bg-raised: #1C1A17; --bg-card: #221F1C;
+        --border: rgba(255,255,255,0.06); --border-bright: rgba(255,255,255,0.12);
+        --text: #E8E2DB; --text-dim: #9C9590; --text-faint: #6B6560;
+        --accent: #E8711A; --accent-dim: rgba(232,113,26,0.12);
+      }
+      nav { background: rgba(20,18,16,0.85); }
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(245,240,235,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: var(--mono); font-weight: 700; font-size: 1.2rem; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .nav-logo img { width: 28px; height: 28px; }
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--text-dim); font-size: 0.88rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--text); color: var(--bg) !important; padding: 8px 20px; border-radius: 8px; font-size: 0.85rem !important; font-weight: 600 !important; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.85; color: var(--bg) !important; }
+    .theme-toggle { background: none; border: 1px solid var(--border-bright); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; color: var(--text-dim); transition: border-color 0.2s, color 0.2s; }
+    .theme-toggle:hover { border-color: var(--text-dim); color: var(--text); }
+
+    .container { max-width: 1200px; margin: 0 auto; }
+
+    .page-hero {
+      padding: 140px 32px 48px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .page-hero h1 {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 12px;
+    }
+
+    .page-hero p {
+      font-size: 1.1rem;
+      color: var(--text-dim);
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    .docs-grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 48px 32px 120px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .doc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color 0.3s, box-shadow 0.3s, transform 0.2s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .doc-card:hover {
+      border-color: var(--border-bright);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+      transform: translateY(-2px);
+    }
+
+    .doc-card .card-num {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 16px;
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--accent-dim);
+      border-radius: 6px;
+    }
+
+    .doc-card h2 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .doc-card p {
+      font-size: 0.88rem;
+      color: var(--text-dim);
+      line-height: 1.65;
+    }
+
+    .doc-card.coming-soon { opacity: 0.5; pointer-events: none; }
+    .doc-card.coming-soon::after { content: ' (coming soon)'; font-size: 0.78rem; color: var(--text-faint); }
+
+    footer { padding: 48px 32px; border-top: 1px solid var(--border); }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .footer-brand { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-weight: 700; font-size: 1rem; color: var(--text-dim); }
+    .footer-brand img { width: 22px; height: 22px; }
+    .footer-links { display: flex; gap: 32px; list-style: none; }
+    .footer-links a { color: var(--text-faint); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy { width: 100%; text-align: center; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-faint); }
+
+    @media (max-width: 900px) {
+      .docs-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .page-hero { padding: 120px 20px 32px; }
+      .page-hero h1 { font-size: 2rem; }
+      .docs-grid { grid-template-columns: 1fr; padding: 32px 20px 80px; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-logo"><img src="/fawx-mono-nobg.png" alt="Fawx"> fawx</a>
+      <ul class="nav-links">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#demo">Demo</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/download.html" class="nav-cta">Download</a></li>
+        <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><span class="theme-icon">☀</span></button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="page-hero">
+    <h1>Documentation</h1>
+    <p>Everything you need to set up, configure, and extend Fawx.</p>
+  </div>
+
+  <div class="docs-grid">
+    <a href="/docs/setup.html" class="doc-card">
+      <span class="card-num">01</span>
+      <h2>Setup</h2>
+      <p>Install Fawx, connect your AI provider, and configure permissions. The setup wizard walkthrough.</p>
+    </a>
+
+    <a href="/docs/tools.html" class="doc-card">
+      <span class="card-num">02</span>
+      <h2>Tools</h2>
+      <p>The 13+ built-in tools Fawx can use: files, web, browser, git, shell, and more.</p>
+    </a>
+
+    <a href="/docs/skills.html" class="doc-card">
+      <span class="card-num">03</span>
+      <h2>Skills</h2>
+      <p>WASM plugin system. Install from the marketplace or build your own in any language.</p>
+    </a>
+
+    <a href="/docs/fleet.html" class="doc-card">
+      <span class="card-num">04</span>
+      <h2>Fleet</h2>
+      <p>Distribute work across multiple machines over Tailscale. Primary/worker architecture.</p>
+    </a>
+
+    <a href="/docs/security.html" class="doc-card">
+      <span class="card-num">05</span>
+      <h2>Security</h2>
+      <p>The kernel safety architecture. Capability boundaries, tripwire monitoring, and atomic rollback.</p>
+    </a>
+
+    <a href="/docs/api.html" class="doc-card coming-soon">
+      <span class="card-num">06</span>
+      <h2>API Reference</h2>
+      <p>HTTP API endpoints for automation and integration.</p>
+    </a>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand"><img src="/fawx-mono-nobg.png" alt="Fawx"> fawx</div>
+      <ul class="footer-links">
+        <li><a href="/download.html">Download</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-copy">&copy; 2026 Fawx AI. All rights reserved.</div>
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      var html = document.documentElement;
+      var current = html.getAttribute('data-theme');
+      var icon = document.querySelector('.theme-icon');
+      if (current === 'light') { html.setAttribute('data-theme', 'dark'); icon.textContent = '☀'; localStorage.setItem('fawx-theme', 'dark'); }
+      else { html.setAttribute('data-theme', 'light'); icon.textContent = '☾'; localStorage.setItem('fawx-theme', 'light'); }
+    }
+    (function() {
+      var saved = localStorage.getItem('fawx-theme');
+      var icon = document.querySelector('.theme-icon');
+      if (saved) { document.documentElement.setAttribute('data-theme', saved); icon.textContent = saved === 'dark' ? '☀' : '☾'; }
+      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) { document.documentElement.setAttribute('data-theme', 'dark'); icon.textContent = '☀'; }
+      else { document.documentElement.setAttribute('data-theme', 'light'); icon.textContent = '☾'; }
+    })();
+  </script>
+</body>
+</html>
