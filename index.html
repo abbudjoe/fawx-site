@@ -6,7 +6,7 @@
   <title>Fawx — Your AI, on your machine.</title>
   <meta name="description" content="An agentic AI engine built in Rust. It thinks, calls tools, remembers what it learns, and runs entirely on your hardware.">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
     :root {
       --bg: #F5F0EB;
@@ -27,6 +27,7 @@
       --terminal-text: #CDD6F4;
       --terminal-muted: #6C7086;
       --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
       --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
     }
 
@@ -134,6 +135,54 @@
       color: var(--text);
     }
 
+    .theme-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .theme-toggle:hover { border-color: var(--border-bright); }
+
+    html[data-theme="light"] {
+      --bg: #F5F0EB;
+      --bg-raised: #EDE8E2;
+      --bg-card: #FFFFFF;
+      --border: rgba(0,0,0,0.08);
+      --border-bright: rgba(0,0,0,0.15);
+      --text: #1A1A1A;
+      --text-dim: #5C5C5C;
+      --text-faint: #8A8A8A;
+      --accent: #D45E14;
+      --accent-dim: rgba(212,94,20,0.08);
+      --accent-glow: rgba(212,94,20,0.18);
+    }
+
+    html[data-theme="light"] nav { background: rgba(245,240,235,0.85); }
+
+    html[data-theme="dark"] {
+      --bg: #141210;
+      --bg-raised: #1C1A17;
+      --bg-card: #221F1C;
+      --border: rgba(255,255,255,0.06);
+      --border-bright: rgba(255,255,255,0.12);
+      --text: #E8E2DB;
+      --text-dim: #9C9590;
+      --text-faint: #6B6560;
+      --accent: #E8711A;
+      --accent-dim: rgba(232,113,26,0.12);
+      --accent-glow: rgba(232,113,26,0.2);
+    }
+
+    html[data-theme="dark"] nav { background: rgba(20,18,16,0.85); }
+
     /* ─── HERO ─── */
     .hero {
       min-height: 100vh;
@@ -155,10 +204,11 @@
     }
 
     .hero-text h1 {
+      font-family: var(--font-display);
       font-size: 3.8rem;
-      font-weight: 900;
+      font-weight: 700;
       line-height: 1.08;
-      letter-spacing: -0.04em;
+      letter-spacing: -0.03em;
       margin-bottom: 12px;
     }
 
@@ -264,9 +314,10 @@
     }
 
     .section-heading {
+      font-family: var(--font-display);
       font-size: 2.6rem;
-      font-weight: 800;
-      letter-spacing: -0.03em;
+      font-weight: 700;
+      letter-spacing: -0.02em;
       line-height: 1.1;
       margin-bottom: 16px;
     }
@@ -688,6 +739,9 @@
         <li><a href="/docs/">Docs</a></li>
         <li><a href="/about.html">About</a></li>
         <li><a href="/download.html" class="nav-cta">Download</a></li>
+        <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle light/dark">
+          <span class="theme-icon">☀</span>
+        </button></li>
       </ul>
     </div>
   </nav>
@@ -699,10 +753,10 @@
         <h1>
           Your AI<br>
           <span class="hero-rotate-line" id="heroRotate">
-            <span class="hero-rotate-word active">reads your codebase.</span>
-            <span class="hero-rotate-word">calls tools autonomously.</span>
-            <span class="hero-rotate-word">remembers what it learns.</span>
-            <span class="hero-rotate-word">runs on your hardware.</span>
+            <span class="hero-rotate-word active">reads your code.</span>
+            <span class="hero-rotate-word">calls tools.</span>
+            <span class="hero-rotate-word">remembers.</span>
+            <span class="hero-rotate-word">runs locally.</span>
           </span>
         </h1>
         <p class="hero-sub">An agentic engine built in Rust. It plans multi-step actions, uses 13+ tools, and runs entirely on your machine with your API keys. No cloud dependency.</p>
@@ -943,6 +997,38 @@
   </footer>
 
   <script>
+    // Theme toggle
+    function toggleTheme() {
+      var html = document.documentElement;
+      var current = html.getAttribute('data-theme');
+      var icon = document.querySelector('.theme-icon');
+      if (current === 'light') {
+        html.setAttribute('data-theme', 'dark');
+        icon.textContent = '☀';
+        localStorage.setItem('fawx-theme', 'dark');
+      } else {
+        html.setAttribute('data-theme', 'light');
+        icon.textContent = '☾';
+        localStorage.setItem('fawx-theme', 'light');
+      }
+    }
+
+    // Restore saved theme or detect system preference
+    (function() {
+      var saved = localStorage.getItem('fawx-theme');
+      var icon = document.querySelector('.theme-icon');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+        icon.textContent = saved === 'dark' ? '☀' : '☾';
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        icon.textContent = '☀';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        icon.textContent = '☾';
+      }
+    })();
+
     // Rotating hero text
     (function() {
       var words = document.querySelectorAll('.hero-rotate-word');
