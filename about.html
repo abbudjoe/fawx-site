@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — Fawx</title>
+  <meta name="description" content="Why Fawx exists. An agentic AI engine that runs on your hardware, under your control.">
+  <link rel="icon" type="image/png" href="/fawx-mono-nobg.png">
+  <link rel="apple-touch-icon" href="/fawx-new.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+    :root {
+      --bg: #F5F0EB; --bg-raised: #EDE8E2; --bg-card: #FFFFFF;
+      --border: rgba(0,0,0,0.08); --border-bright: rgba(0,0,0,0.15);
+      --text: #1A1A1A; --text-dim: #5C5C5C; --text-faint: #8A8A8A;
+      --accent: #D45E14; --accent-dim: rgba(212,94,20,0.08); --accent-glow: rgba(212,94,20,0.18);
+      --font: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    }
+
+    html[data-theme="light"] {
+      --bg: #F5F0EB; --bg-raised: #EDE8E2; --bg-card: #FFFFFF;
+      --border: rgba(0,0,0,0.08); --border-bright: rgba(0,0,0,0.15);
+      --text: #1A1A1A; --text-dim: #5C5C5C; --text-faint: #8A8A8A;
+      --accent: #D45E14; --accent-dim: rgba(212,94,20,0.08);
+    }
+    html[data-theme="light"] nav { background: rgba(245,240,235,0.85); }
+
+    html[data-theme="dark"] {
+      --bg: #141210; --bg-raised: #1C1A17; --bg-card: #221F1C;
+      --border: rgba(255,255,255,0.06); --border-bright: rgba(255,255,255,0.12);
+      --text: #E8E2DB; --text-dim: #9C9590; --text-faint: #6B6560;
+      --accent: #E8711A; --accent-dim: rgba(232,113,26,0.12);
+    }
+    html[data-theme="dark"] nav { background: rgba(20,18,16,0.85); }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141210; --bg-raised: #1C1A17; --bg-card: #221F1C;
+        --border: rgba(255,255,255,0.06); --border-bright: rgba(255,255,255,0.12);
+        --text: #E8E2DB; --text-dim: #9C9590; --text-faint: #6B6560;
+        --accent: #E8711A; --accent-dim: rgba(232,113,26,0.12);
+      }
+      nav { background: rgba(20,18,16,0.85); }
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; background: rgba(245,240,235,0.85); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    .nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 32px; height: 64px; display: flex; align-items: center; justify-content: space-between; }
+    .nav-logo { font-family: var(--mono); font-weight: 700; font-size: 1.2rem; color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px; }
+    .nav-logo img { width: 28px; height: 28px; }
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--text-dim); font-size: 0.88rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta { background: var(--text); color: var(--bg) !important; padding: 8px 20px; border-radius: 8px; font-size: 0.85rem !important; font-weight: 600 !important; transition: opacity 0.2s; }
+    .nav-cta:hover { opacity: 0.85; color: var(--bg) !important; }
+    .theme-toggle { background: none; border: 1px solid var(--border-bright); border-radius: 8px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1rem; color: var(--text-dim); transition: border-color 0.2s, color 0.2s; }
+    .theme-toggle:hover { border-color: var(--text-dim); color: var(--text); }
+
+    .prose {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 140px 32px 80px;
+    }
+
+    .prose h1 {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin-bottom: 32px;
+    }
+
+    .prose h2 {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-top: 56px;
+      margin-bottom: 16px;
+    }
+
+    .prose p {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: var(--text-dim);
+      margin-bottom: 20px;
+    }
+
+    .prose p:first-of-type {
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+
+    .prose ul {
+      list-style: none;
+      padding: 0;
+      margin-bottom: 20px;
+    }
+
+    .prose ul li {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 12px;
+      font-size: 1rem;
+      color: var(--text-dim);
+      line-height: 1.7;
+    }
+
+    .prose ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 10px;
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      background: var(--accent-dim);
+      border: 1px solid var(--accent);
+    }
+
+    .prose ul li strong { color: var(--text); }
+
+    .prose .signature {
+      margin-top: 56px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+      font-size: 0.92rem;
+      color: var(--text-faint);
+      line-height: 1.7;
+    }
+
+    footer { padding: 48px 32px; border-top: 1px solid var(--border); }
+    .footer-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+    .footer-brand { display: flex; align-items: center; gap: 10px; font-family: var(--mono); font-weight: 700; font-size: 1rem; color: var(--text-dim); }
+    .footer-brand img { width: 22px; height: 22px; }
+    .footer-links { display: flex; gap: 32px; list-style: none; }
+    .footer-links a { color: var(--text-faint); text-decoration: none; font-size: 0.85rem; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy { width: 100%; text-align: center; margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--border); font-size: 0.8rem; color: var(--text-faint); }
+
+    @media (max-width: 600px) {
+      .prose { padding: 120px 20px 60px; }
+      .prose h1 { font-size: 2rem; }
+      .footer-inner { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-logo"><img src="/fawx-mono-nobg.png" alt="Fawx"> fawx</a>
+      <ul class="nav-links">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/#demo">Demo</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/download.html" class="nav-cta">Download</a></li>
+        <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><span class="theme-icon">☀</span></button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="prose">
+    <h1>Why Fawx exists.</h1>
+
+    <p>AI assistants today run on someone else's server, through someone else's interface, with someone else's rules. Your conversations live on their infrastructure. Your data passes through their systems. The intelligence is rented, not owned.</p>
+
+    <p>Fawx is the opposite. It runs on your machine, with your API keys, under your control. It's not a chatbot — it's an agentic engine that plans, acts, and remembers.</p>
+
+    <h2>What makes Fawx different</h2>
+
+    <ul>
+      <li><strong>Local-first.</strong> Your data never leaves your machine unless you explicitly tell it to. Conversations, memory, credentials — all local, all encrypted.</li>
+      <li><strong>Agent, not assistant.</strong> Fawx doesn't just respond to prompts. It decomposes tasks, calls tools on your machine, reads and writes files, runs commands, and synthesizes results across multiple steps.</li>
+      <li><strong>Kernel safety.</strong> A compiled safety layer the AI cannot modify, inspect, or bypass. This isn't prompt-based guardrails — it's real enforcement, compiled into the binary. The agent works freely within defined boundaries; the kernel ensures those boundaries hold.</li>
+      <li><strong>Self-extending.</strong> WASM skill plugins let Fawx learn new capabilities without rebuilding. Skills are cryptographically signed, sandboxed, and hot-reloadable.</li>
+      <li><strong>Multi-surface.</strong> The same engine powers the native macOS app, the terminal UI, and the HTTP API. Start a conversation in the app, continue it in the terminal. Same thread, same memory.</li>
+    </ul>
+
+    <h2>Where it's going</h2>
+
+    <p>Fawx is a foundation, not a finished product. The architecture is designed for what comes next: distributing work across multiple machines, running local models with zero cloud dependency, and eventually, an operating system where the AI isn't an app you open — it's the environment you work in.</p>
+
+    <p>iOS is in testing. Android is planned. The engine is the constant — the shells change.</p>
+
+    <h2>The philosophy</h2>
+
+    <p>Every AI tool asks you to trust it. Fawx earns trust differently: by running on your hardware, keeping your data local, and enforcing safety through code — not promises.</p>
+
+    <p>The kernel is not a feature. It's the foundation. It exists because powerful tools need real constraints, and those constraints need to be verifiable, not just claimed.</p>
+
+    <div class="signature">
+      Built by Joe. Written in Rust.
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand"><img src="/fawx-mono-nobg.png" alt="Fawx"> fawx</div>
+      <ul class="footer-links">
+        <li><a href="/download.html">Download</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/about.html">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-copy">&copy; 2026 Fawx AI. All rights reserved.</div>
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      var html = document.documentElement;
+      var current = html.getAttribute('data-theme');
+      var icon = document.querySelector('.theme-icon');
+      if (current === 'light') { html.setAttribute('data-theme', 'dark'); icon.textContent = '☀'; localStorage.setItem('fawx-theme', 'dark'); }
+      else { html.setAttribute('data-theme', 'light'); icon.textContent = '☾'; localStorage.setItem('fawx-theme', 'light'); }
+    }
+    (function() {
+      var saved = localStorage.getItem('fawx-theme');
+      var icon = document.querySelector('.theme-icon');
+      if (saved) { document.documentElement.setAttribute('data-theme', saved); icon.textContent = saved === 'dark' ? '☀' : '☾'; }
+      else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) { document.documentElement.setAttribute('data-theme', 'dark'); icon.textContent = '☀'; }
+      else { document.documentElement.setAttribute('data-theme', 'light'); icon.textContent = '☾'; }
+    })();
+  </script>
+</body>
+</html>
