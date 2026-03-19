@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Fawx — Your AI, in your terminal.</title>
-  <meta name="description" content="An open-source agentic AI engine built in Rust. It thinks, calls tools, remembers what it learns, and runs on your hardware.">
+  <title>Fawx — Your AI, on your machine.</title>
+  <meta name="description" content="An agentic AI engine built in Rust. It thinks, calls tools, remembers what it learns, and runs entirely on your hardware.">
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
@@ -12,18 +12,14 @@
       --bg: #F5F0EB;
       --bg-raised: #EDE8E2;
       --bg-card: #FFFFFF;
-      --bg-card-hover: #FAF8F6;
       --border: rgba(0,0,0,0.08);
       --border-bright: rgba(0,0,0,0.15);
       --text: #1A1A1A;
       --text-dim: #5C5C5C;
       --text-faint: #8A8A8A;
-      --accent: #E8622B;
-      --accent-dim: rgba(232,98,43,0.1);
-      --accent-glow: rgba(232,98,43,0.25);
-      --fox: #E8622B;
-      --fox-dim: rgba(232,98,43,0.1);
-      --white: #FFFFFF;
+      --accent: #BF5700;
+      --accent-dim: rgba(191,87,0,0.08);
+      --accent-glow: rgba(191,87,0,0.18);
       --terminal-bg: #1E1E2E;
       --terminal-green: #A6E3A1;
       --terminal-blue: #89B4FA;
@@ -32,6 +28,22 @@
       --terminal-muted: #6C7086;
       --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141210;
+        --bg-raised: #1C1A17;
+        --bg-card: #221F1C;
+        --border: rgba(255,255,255,0.06);
+        --border-bright: rgba(255,255,255,0.12);
+        --text: #E8E2DB;
+        --text-dim: #9C9590;
+        --text-faint: #6B6560;
+        --accent: #D4722A;
+        --accent-dim: rgba(212,114,42,0.12);
+        --accent-glow: rgba(212,114,42,0.2);
+      }
     }
 
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
@@ -49,14 +61,16 @@
     /* ─── NAV ─── */
     nav {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       z-index: 100;
       background: rgba(245,240,235,0.85);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      nav { background: rgba(20,18,16,0.85); }
     }
 
     .nav-inner {
@@ -73,17 +87,14 @@
       font-family: var(--mono);
       font-weight: 700;
       font-size: 1.2rem;
-      color: var(--accent);
+      color: var(--text);
       text-decoration: none;
       display: flex;
       align-items: center;
       gap: 10px;
     }
 
-    .nav-logo img {
-      width: 30px;
-      height: 30px;
-    }
+    .nav-logo img { width: 28px; height: 28px; }
 
     .nav-links {
       display: flex;
@@ -100,25 +111,19 @@
       transition: color 0.2s;
     }
 
-    .nav-links a:hover { color: var(--accent); }
+    .nav-links a:hover { color: var(--text); }
 
-    .nav-gh {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      border: 1px solid var(--border-bright);
+    .nav-cta {
       background: var(--text);
       color: var(--bg) !important;
-      padding: 7px 16px;
+      padding: 8px 20px;
       border-radius: 8px;
       font-size: 0.85rem !important;
+      font-weight: 600 !important;
       transition: opacity 0.2s;
     }
 
-    .nav-gh:hover {
-      opacity: 0.8;
-      color: var(--bg) !important;
-    }
+    .nav-cta:hover { opacity: 0.85; color: var(--bg) !important; }
 
     .mobile-toggle {
       display: none;
@@ -129,113 +134,69 @@
       color: var(--text);
     }
 
-    /* ─── HERO: split layout ─── */
+    /* ─── HERO ─── */
     .hero {
       min-height: 100vh;
       display: flex;
       align-items: center;
-      padding: 100px 32px 60px;
+      padding: 100px 32px 80px;
       position: relative;
       overflow: hidden;
-    }
-
-    .hero::before {
-      content: '';
-      position: absolute;
-      top: -200px;
-      right: -200px;
-      width: 800px;
-      height: 800px;
-      background: radial-gradient(circle, rgba(232,98,43,0.1) 0%, transparent 60%);
-      pointer-events: none;
-    }
-
-    .hero::after {
-      content: '';
-      position: absolute;
-      bottom: -300px;
-      left: -100px;
-      width: 600px;
-      height: 600px;
-      background: radial-gradient(circle, rgba(249,115,22,0.06) 0%, transparent 60%);
-      pointer-events: none;
     }
 
     .hero-grid {
       max-width: 1200px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: 1.1fr 0.9fr;
       gap: 80px;
       align-items: center;
-      position: relative;
-      z-index: 1;
       width: 100%;
     }
 
     .hero-text h1 {
-      font-size: 4rem;
+      font-size: 3.8rem;
       font-weight: 900;
-      line-height: 1.05;
+      line-height: 1.08;
       letter-spacing: -0.04em;
-      margin-bottom: 24px;
+      margin-bottom: 12px;
     }
 
-    .hero-text h1 .line2 {
+    .hero-rotate-line {
+      display: block;
+      height: 1.15em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-rotate-word {
+      position: absolute;
+      left: 0;
       color: var(--accent);
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease, transform 0.4s ease;
     }
 
-    .hero-text h1 .line3 {
-      color: var(--text-dim);
-      font-weight: 700;
+    .hero-rotate-word.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .hero-rotate-word.exiting {
+      opacity: 0;
+      transform: translateY(-20px);
     }
 
     .hero-sub {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       color: var(--text-dim);
       line-height: 1.75;
       max-width: 480px;
-      margin-bottom: 40px;
+      margin-bottom: 36px;
     }
 
     .hero-actions {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .install-cmd {
-      background: var(--terminal-bg);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 12px;
-      padding: 16px 24px;
-      display: inline-flex;
-      align-items: center;
-      gap: 14px;
-      font-family: var(--mono);
-      font-size: 0.95rem;
-      max-width: fit-content;
-      color: var(--terminal-text);
-    }
-
-    .install-cmd .dollar { color: var(--terminal-green); user-select: none; }
-    .install-cmd .cmd { color: var(--terminal-yellow); }
-
-    .install-cmd button {
-      background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.15);
-      border-radius: 6px;
-      color: var(--terminal-text);
-      padding: 4px 12px;
-      font-size: 0.78rem;
-      cursor: pointer;
-      font-family: var(--mono);
-      transition: background 0.2s;
-    }
-
-    .install-cmd button:hover { background: rgba(255,255,255,0.15); }
-
-    .hero-buttons {
       display: flex;
       gap: 12px;
     }
@@ -244,7 +205,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 28px;
+      padding: 13px 28px;
       border-radius: 10px;
       font-weight: 600;
       font-size: 0.95rem;
@@ -254,14 +215,13 @@
       border: none;
     }
 
-    .btn-accent {
+    .btn-primary {
       background: var(--accent);
       color: #FFFFFF;
-      box-shadow: 0 0 24px var(--accent-glow);
     }
 
-    .btn-accent:hover {
-      box-shadow: 0 0 40px var(--accent-glow);
+    .btn-primary:hover {
+      box-shadow: 0 0 32px var(--accent-glow);
       transform: translateY(-1px);
     }
 
@@ -280,72 +240,22 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      position: relative;
-    }
-
-    .hero-mascot-wrap {
-      position: relative;
-    }
-
-    .hero-mascot-wrap::before {
-      content: '';
-      position: absolute;
-      inset: -40px;
-      border-radius: 50%;
-      background: radial-gradient(circle, var(--fox-dim) 0%, transparent 70%);
-      z-index: 0;
     }
 
     .hero-mascot {
-      width: 320px;
-      height: 320px;
-      position: relative;
-      z-index: 1;
-      filter: drop-shadow(0 12px 40px rgba(232,98,43,0.2));
+      width: 340px;
+      height: 340px;
+      filter: drop-shadow(0 16px 48px rgba(191,87,0,0.12));
     }
 
-    /* ─── MARQUEE STRIP ─── */
-    .marquee-strip {
-      background: var(--bg-raised);
-      border-top: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
-      padding: 16px 0;
-      overflow: hidden;
-      white-space: nowrap;
-    }
+    /* ─── FEATURES ─── */
+    .features { padding: 120px 32px; }
 
-    .marquee-track {
-      display: inline-flex;
-      gap: 48px;
-      animation: scroll-left 30s linear infinite;
-      font-family: var(--mono);
-      font-size: 0.82rem;
-      color: var(--text-faint);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    .marquee-track span { flex-shrink: 0; }
-    .marquee-track .dot { color: var(--accent); }
-
-    @keyframes scroll-left {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* ─── BENTO FEATURES ─── */
-    .features {
-      padding: 120px 32px;
-    }
-
-    .features .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
+    .container { max-width: 1200px; margin: 0 auto; }
 
     .section-tag {
       font-family: var(--mono);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       text-transform: uppercase;
       letter-spacing: 0.15em;
       color: var(--accent);
@@ -354,7 +264,7 @@
     }
 
     .section-heading {
-      font-size: 2.8rem;
+      font-size: 2.6rem;
       font-weight: 800;
       letter-spacing: -0.03em;
       line-height: 1.1;
@@ -362,7 +272,7 @@
     }
 
     .section-sub {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       color: var(--text-dim);
       max-width: 520px;
       line-height: 1.7;
@@ -371,8 +281,7 @@
 
     .bento {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      grid-template-rows: auto auto;
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
     }
 
@@ -382,8 +291,6 @@
       border-radius: 16px;
       padding: 32px;
       transition: box-shadow 0.3s, border-color 0.3s;
-      position: relative;
-      overflow: hidden;
       box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
 
@@ -395,38 +302,27 @@
     .bento-card.span-2 { grid-column: span 2; }
 
     .bento-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 20px;
-      font-size: 1.1rem;
-      font-weight: 700;
       font-family: var(--mono);
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      color: var(--text-faint);
     }
 
-    .bento-icon.teal { background: var(--accent-dim); color: var(--accent); }
-    .bento-icon.orange { background: var(--fox-dim); color: var(--fox); }
-    .bento-icon.blue { background: rgba(59,130,246,0.15); color: #60A5FA; }
-    .bento-icon.purple { background: rgba(168,85,247,0.15); color: #C084FC; }
-
     .bento-card h3 {
-      font-size: 1.1rem;
+      font-size: 1.05rem;
       font-weight: 700;
       margin-bottom: 8px;
     }
 
     .bento-card p {
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-dim);
       line-height: 1.65;
     }
 
-    .bento-card .mini-terminal {
+    .mini-terminal {
       background: var(--terminal-bg);
-      border: none;
       border-radius: 8px;
       padding: 14px 16px;
       margin-top: 16px;
@@ -436,12 +332,12 @@
       line-height: 1.8;
     }
 
-    .bento-card .mini-terminal .g { color: var(--terminal-green); }
-    .bento-card .mini-terminal .b { color: var(--terminal-blue); }
-    .bento-card .mini-terminal .y { color: var(--terminal-yellow); }
-    .bento-card .mini-terminal .m { color: var(--terminal-muted); }
+    .mini-terminal .g { color: var(--terminal-green); }
+    .mini-terminal .b { color: var(--terminal-blue); }
+    .mini-terminal .y { color: var(--terminal-yellow); }
+    .mini-terminal .m { color: var(--terminal-muted); }
 
-    /* ─── DEMO SECTION: full-bleed dark ─── */
+    /* ─── DEMO ─── */
     .demo {
       padding: 120px 32px;
       background: var(--bg-raised);
@@ -450,8 +346,6 @@
     }
 
     .demo .container {
-      max-width: 1200px;
-      margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1.3fr;
       gap: 64px;
@@ -460,7 +354,6 @@
 
     .terminal {
       background: var(--terminal-bg);
-      border: none;
       border-radius: 14px;
       overflow: hidden;
       box-shadow: 0 12px 40px rgba(0,0,0,0.15);
@@ -490,12 +383,12 @@
     .terminal-body {
       padding: 24px;
       font-family: var(--mono);
-      font-size: 0.85rem;
-      line-height: 1.8;
+      font-size: 0.82rem;
+      line-height: 1.85;
       color: var(--terminal-text);
     }
 
-    .tl { margin-bottom: 2px; }
+    .tl { margin-bottom: 1px; }
     .tl .pr { color: var(--terminal-green); font-weight: 600; }
     .tl .tool { color: var(--terminal-blue); }
     .tl .ok { color: var(--terminal-green); }
@@ -515,16 +408,10 @@
 
     @keyframes blink { 50% { opacity: 0; } }
 
-    /* ─── ARCHITECTURE: horizontal layers ─── */
-    .arch {
-      padding: 120px 32px;
-    }
+    /* ─── ARCHITECTURE ─── */
+    .arch { padding: 120px 32px; }
 
-    .arch .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      text-align: center;
-    }
+    .arch .container { text-align: center; }
 
     .arch-stack {
       display: flex;
@@ -542,22 +429,20 @@
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 12px;
-      transition: border-color 0.3s, background 0.3s;
+      transition: border-color 0.3s;
     }
 
     .arch-row:hover {
-      border-color: var(--accent);
-      background: var(--white);
+      border-color: var(--border-bright);
       box-shadow: 0 4px 16px rgba(0,0,0,0.06);
     }
 
     .arch-row .num {
       font-family: var(--mono);
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       color: var(--accent);
-      width: 28px;
-      height: 28px;
+      width: 28px; height: 28px;
       border-radius: 6px;
       background: var(--accent-dim);
       display: flex;
@@ -575,14 +460,14 @@
 
     .arch-row .detail {
       font-family: var(--mono);
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: var(--text-faint);
       text-align: left;
     }
 
     .arch-note {
       margin-top: 28px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       color: var(--text-faint);
       max-width: 600px;
       margin-left: auto;
@@ -590,7 +475,7 @@
       line-height: 1.65;
     }
 
-    /* ─── GETTING STARTED: timeline style ─── */
+    /* ─── GETTING STARTED ─── */
     .getting-started {
       padding: 120px 32px;
       background: var(--bg-raised);
@@ -599,146 +484,99 @@
     }
 
     .getting-started .container {
-      max-width: 1200px;
-      margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1.2fr;
       gap: 80px;
       align-items: start;
     }
 
-    .timeline {
-      position: relative;
-      padding-left: 32px;
-    }
+    .steps { counter-reset: step; }
 
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 7px;
-      top: 8px;
-      bottom: 8px;
-      width: 2px;
-      background: linear-gradient(to bottom, var(--accent), #C44D1A);
-      border-radius: 2px;
-    }
-
-    .tl-item {
+    .step-item {
+      counter-increment: step;
       position: relative;
+      padding-left: 48px;
       margin-bottom: 36px;
     }
 
-    .tl-item:last-child { margin-bottom: 0; }
+    .step-item:last-child { margin-bottom: 0; }
 
-    .tl-item::before {
-      content: '';
+    .step-item::before {
+      content: counter(step);
       position: absolute;
-      left: -29px;
-      top: 8px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--accent);
-      border: 3px solid var(--bg-raised);
-      box-shadow: 0 0 0 2px var(--bg-raised);
+      left: 0; top: 2px;
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      background: var(--accent-dim);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    .tl-item h3 {
+    .step-item h3 {
       font-size: 1rem;
       font-weight: 700;
       margin-bottom: 4px;
     }
 
-    .tl-item p {
-      font-size: 0.9rem;
+    .step-item p {
+      font-size: 0.88rem;
       color: var(--text-dim);
-      line-height: 1.6;
+      line-height: 1.65;
     }
 
-    .tl-item code {
-      font-family: var(--mono);
-      background: var(--terminal-bg);
+    /* ─── FAQ ─── */
+    .faq { padding: 120px 32px; }
+
+    .faq .container { max-width: 760px; }
+
+    .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .faq-question {
+      width: 100%;
+      background: none;
       border: none;
-      color: var(--terminal-yellow);
-      padding: 3px 10px;
-      border-radius: 5px;
-      font-size: 0.82rem;
-    }
-
-    /* ─── SKILLS: horizontal scroll ─── */
-    .skills {
-      padding: 120px 32px;
-    }
-
-    .skills .container {
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .skills-row {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-top: 48px;
-    }
-
-    .skill-tile {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 28px;
-      transition: border-color 0.3s, transform 0.2s, box-shadow 0.3s;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-    }
-
-    .skill-tile:hover {
-      border-color: var(--accent);
-      transform: translateY(-3px);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.08);
-    }
-
-    .skill-tile .tile-name {
-      font-family: var(--mono);
-      font-weight: 700;
-      font-size: 0.95rem;
-      margin-bottom: 6px;
+      padding: 24px 0;
+      text-align: left;
+      font-family: var(--font);
+      font-size: 1rem;
+      font-weight: 600;
       color: var(--text);
-    }
-
-    .skill-tile .tile-desc {
-      font-size: 0.85rem;
-      color: var(--text-dim);
-      line-height: 1.6;
-    }
-
-    .skill-tile .tile-tag {
-      display: inline-block;
-      margin-top: 12px;
-      font-family: var(--mono);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--accent);
-      background: var(--accent-dim);
-      padding: 3px 10px;
-      border-radius: 4px;
-    }
-
-    .skills-footer {
-      margin-top: 40px;
+      cursor: pointer;
       display: flex;
-      gap: 40px;
-      font-size: 0.9rem;
-      color: var(--text-dim);
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
     }
 
-    .skills-footer code {
-      font-family: var(--mono);
-      color: var(--terminal-yellow);
-      background: var(--terminal-bg);
-      padding: 3px 10px;
-      border-radius: 5px;
-      font-size: 0.82rem;
+    .faq-question:hover { color: var(--accent); }
+
+    .faq-chevron {
+      font-size: 1.2rem;
+      color: var(--text-faint);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+
+    .faq-answer-inner {
+      padding: 0 0 24px;
+      font-size: 0.92rem;
+      color: var(--text-dim);
+      line-height: 1.75;
     }
 
     /* ─── FOOTER ─── */
@@ -782,7 +620,7 @@
       transition: color 0.2s;
     }
 
-    .footer-links a:hover { color: var(--accent); }
+    .footer-links a:hover { color: var(--text); }
 
     .footer-copy {
       width: 100%;
@@ -801,34 +639,15 @@
         gap: 48px;
         text-align: center;
       }
-
       .hero-text h1 { font-size: 2.8rem; }
       .hero-sub { margin-left: auto; margin-right: auto; }
-      .hero-actions { align-items: center; }
-      .hero-buttons { justify-content: center; }
+      .hero-actions { justify-content: center; }
       .hero-visual { order: -1; }
       .hero-mascot { width: 220px; height: 220px; }
-
-      .bento {
-        grid-template-columns: 1fr;
-      }
-
+      .bento { grid-template-columns: 1fr; }
       .bento-card.span-2 { grid-column: span 1; }
-
-      .demo .container {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-
-      .getting-started .container {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-
-      .skills-row {
-        grid-template-columns: 1fr 1fr;
-      }
-
+      .demo .container { grid-template-columns: 1fr; gap: 40px; }
+      .getting-started .container { grid-template-columns: 1fr; gap: 40px; }
       .section-heading { font-size: 2rem; }
     }
 
@@ -836,55 +655,39 @@
       .nav-links {
         display: none;
         position: absolute;
-        top: 64px;
-        left: 0;
-        right: 0;
-        background: var(--white);
+        top: 64px; left: 0; right: 0;
+        background: var(--bg-card);
         border-bottom: 1px solid var(--border);
         flex-direction: column;
         padding: 20px 32px;
         gap: 16px;
         box-shadow: 0 8px 24px rgba(0,0,0,0.08);
       }
-
       .nav-links.open { display: flex; }
       .mobile-toggle { display: block; }
-
       .hero { padding: 100px 20px 60px; min-height: auto; }
       .hero-text h1 { font-size: 2.2rem; }
       .hero-mascot { width: 180px; height: 180px; }
-
-      .features, .demo, .arch, .getting-started, .skills { padding: 80px 20px; }
-
-      .skills-row { grid-template-columns: 1fr; }
-
-      .skills-footer { flex-direction: column; gap: 16px; }
-
-      .install-cmd { font-size: 0.82rem; padding: 12px 16px; }
-
+      .features, .demo, .arch, .getting-started, .faq { padding: 80px 20px; }
       .footer-inner { flex-direction: column; text-align: center; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
   <nav>
     <div class="nav-inner">
-      <a href="#" class="nav-logo">
-        <img src="fawx-new.png" alt="Fawx">
-        fawx
+      <a href="/" class="nav-logo">
+        <img src="fawx-new.png" alt="Fawx"> fawx
       </a>
-      <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Toggle menu">&#9776;</button>
+      <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">&#9776;</button>
       <ul class="nav-links">
         <li><a href="#features">Features</a></li>
         <li><a href="#demo">Demo</a></li>
         <li><a href="#architecture">Architecture</a></li>
-        <li><a href="#install">Install</a></li>
-        <li><a href="https://github.com/fawxai/fawx" class="nav-gh">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-          GitHub
-        </a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/download.html" class="nav-cta">Download</a></li>
       </ul>
     </div>
   </nav>
@@ -894,58 +697,29 @@
     <div class="hero-grid">
       <div class="hero-text">
         <h1>
-          Your AI,<br>
-          <span class="line2">in your terminal.</span>
+          Your AI<br>
+          <span class="hero-rotate-line" id="heroRotate">
+            <span class="hero-rotate-word active">reads your codebase.</span>
+            <span class="hero-rotate-word">calls tools autonomously.</span>
+            <span class="hero-rotate-word">remembers what it learns.</span>
+            <span class="hero-rotate-word">runs on your hardware.</span>
+          </span>
         </h1>
-        <p class="hero-sub">An open-source agentic engine built in Rust. It plans, calls tools, remembers what it learns, and runs entirely on your hardware with your API keys.</p>
+        <p class="hero-sub">An agentic engine built in Rust. It plans multi-step actions, uses 13+ tools, and runs entirely on your machine with your API keys. No cloud dependency.</p>
         <div class="hero-actions">
-          <div class="install-cmd">
-            <span class="dollar">$</span>
-            <span class="cmd">cargo install fawx</span>
-            <button onclick="navigator.clipboard.writeText('cargo install fawx');this.textContent='Done';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
-          </div>
-          <div class="hero-buttons">
-            <a href="#install" class="btn btn-accent">Get Started</a>
-            <a href="https://github.com/fawxai/fawx" class="btn btn-ghost">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
-              Source Code
-            </a>
-          </div>
+          <a href="/download.html" class="btn btn-primary">Download for macOS</a>
+          <a href="/docs/" class="btn btn-ghost">Read the docs</a>
         </div>
       </div>
       <div class="hero-visual">
-        <div class="hero-mascot-wrap">
-          <img src="fawx-new.png" alt="Fawx mascot" class="hero-mascot">
-        </div>
+        <img src="fawx-new.png" alt="Fawx" class="hero-mascot">
       </div>
     </div>
   </header>
 
-  <!-- MARQUEE -->
-  <div class="marquee-strip">
-    <div class="marquee-track">
-      <span>Rust-native</span><span class="dot">//</span>
-      <span>Zero runtime deps</span><span class="dot">//</span>
-      <span>Multi-provider</span><span class="dot">//</span>
-      <span>Persistent memory</span><span class="dot">//</span>
-      <span>WASM plugins</span><span class="dot">//</span>
-      <span>Kernel safety</span><span class="dot">//</span>
-      <span>TUI + Telegram + HTTP</span><span class="dot">//</span>
-      <span>AES-256-GCM encryption</span><span class="dot">//</span>
-      <span>Rust-native</span><span class="dot">//</span>
-      <span>Zero runtime deps</span><span class="dot">//</span>
-      <span>Multi-provider</span><span class="dot">//</span>
-      <span>Persistent memory</span><span class="dot">//</span>
-      <span>WASM plugins</span><span class="dot">//</span>
-      <span>Kernel safety</span><span class="dot">//</span>
-      <span>TUI + Telegram + HTTP</span><span class="dot">//</span>
-      <span>AES-256-GCM encryption</span><span class="dot">//</span>
-    </div>
-  </div>
-
   <main>
 
-    <!-- FEATURES: bento grid -->
+    <!-- FEATURES -->
     <section class="features" id="features">
       <div class="container">
         <p class="section-tag">Capabilities</p>
@@ -953,46 +727,44 @@
         <p class="section-sub">A focused set of capabilities designed for real work, not demos.</p>
 
         <div class="bento">
-
           <div class="bento-card span-2">
-            <div class="bento-icon teal">Rs</div>
+            <div class="bento-icon">01</div>
             <h3>Built in Rust</h3>
-            <p>Starts in milliseconds. Runs for days without leaking memory. A single compiled binary with no runtime dependencies.</p>
+            <p>Starts in milliseconds. Runs for days without leaking memory. A single compiled binary — no interpreters, no runtimes, no Docker.</p>
             <div class="mini-terminal">
-              <span class="m">$</span> <span class="y">time fawx --version</span><br>
-              <span class="g">fawx 0.9.3</span> <span class="m">(compiled 2025-12-01)</span><br>
-              <span class="m">real 0m0.003s</span>
+              <span class="m">$</span> <span class="y">fawx --version</span><br>
+              <span class="g">fawx 1.0.0</span> <span class="m">(2026-03-19)</span>
             </div>
           </div>
 
-          <div class="bento-card span-2">
-            <div class="bento-icon purple">Mm</div>
+          <div class="bento-card">
+            <div class="bento-icon">02</div>
             <h3>Persistent Memory</h3>
-            <p>Fawx remembers across sessions. It learns your projects, preferences, and environment using a built-in embedding model for semantic search. No external vector database needed.</p>
+            <p>Fawx remembers across sessions. It learns your projects, preferences, and patterns using built-in embeddings for semantic search.</p>
           </div>
 
           <div class="bento-card">
-            <div class="bento-icon orange">Fn</div>
+            <div class="bento-icon">03</div>
             <h3>Native Tool Calling</h3>
-            <p>13+ built-in tools for files, web, browser, and code execution. The model calls them natively through provider APIs.</p>
+            <p>13+ built-in tools for files, web, browser, git, and shell. The model calls them natively through provider APIs — no prompting tricks.</p>
           </div>
 
           <div class="bento-card">
-            <div class="bento-icon blue">Wm</div>
-            <h3>WASM Skill Plugins</h3>
-            <p>Hot-loadable WebAssembly skills with cryptographic signature verification. Build your own in any language.</p>
+            <div class="bento-icon">04</div>
+            <h3>WASM Plugins</h3>
+            <p>Hot-loadable WebAssembly skills with cryptographic signature verification. Sandboxed execution. Build your own in any language that compiles to WASM.</p>
           </div>
 
           <div class="bento-card">
-            <div class="bento-icon teal">Gk</div>
+            <div class="bento-icon">05</div>
             <h3>Kernel Safety</h3>
-            <p>Hard separation between the safety kernel and intelligence layer. Credentials encrypted with AES-256-GCM.</p>
+            <p>Compiled safety layer the AI cannot modify. Capability-based boundaries — not permission prompts. The agent works freely within its space; hard blocks only on irreversible actions.</p>
           </div>
 
           <div class="bento-card">
-            <div class="bento-icon purple">Ch</div>
-            <h3>Multi-Channel</h3>
-            <p>TUI, Telegram, HTTP API. Start in your terminal, continue from your phone. Same engine, same thread.</p>
+            <div class="bento-icon">06</div>
+            <h3>Native macOS &amp; TUI</h3>
+            <p>SwiftUI native app for macOS and iOS. Full terminal UI with ratatui. HTTP API for automation. Same engine, same conversation, any surface.</p>
           </div>
 
         </div>
@@ -1005,29 +777,34 @@
         <div>
           <p class="section-tag">See it work</p>
           <h2 class="section-heading">Fawx thinks,<br>then acts.</h2>
-          <p class="section-sub">A real agentic loop. Fawx reads context, calls tools, and synthesizes answers autonomously.</p>
-          <p style="color:var(--text-faint);font-size:0.88rem;line-height:1.7;">Multi-provider support means you can use Claude, GPT, or local models. Switch providers mid-conversation. Token-by-token streaming over SSE lets you watch it think in real time.</p>
+          <p class="section-sub">A real agentic loop. Fawx reads context, calls tools, and synthesizes answers — autonomously, on your machine.</p>
+          <p style="color:var(--text-faint);font-size:0.88rem;line-height:1.7;">Works with Claude, GPT, or any OpenAI-compatible provider. Switch models mid-conversation. Token-by-token streaming shows you the thinking in real time.</p>
         </div>
         <div class="terminal">
           <div class="terminal-bar">
             <span class="terminal-dot r"></span>
             <span class="terminal-dot y"></span>
             <span class="terminal-dot g"></span>
-            <span class="terminal-title">fawx tui</span>
+            <span class="terminal-title">fawx</span>
           </div>
           <div class="terminal-body">
-            <div class="tl"><span class="pr">&#10095; </span>What's the weather in Denver and should I bike to work?</div>
+            <div class="tl"><span class="pr">&#10095; </span>Find the bug in the auth flow and fix it</div>
             <div class="tgap"></div>
-            <div class="tl"><span class="tool">&#128295; web_search</span><span class="dim">("Denver weather today")</span></div>
-            <div class="tl"><span class="ok">&#10003;</span> <span class="dim">52&#176;F, partly cloudy, 5mph winds</span></div>
+            <div class="tl"><span class="tool">&#128295; read_file</span> <span class="dim">src/auth/oauth.rs</span></div>
+            <div class="tl"><span class="ok">&#10003;</span> <span class="dim">247 lines</span></div>
             <div class="tgap"></div>
-            <div class="tl">Based on current conditions in Denver:</div>
-            <div class="tl"><span class="dim">&nbsp;&nbsp;&#8226;</span> Temperature: 52&#176;F (comfortable for cycling)</div>
-            <div class="tl"><span class="dim">&nbsp;&nbsp;&#8226;</span> Wind: 5mph (light, no issue)</div>
-            <div class="tl"><span class="dim">&nbsp;&nbsp;&#8226;</span> No rain in the forecast until evening</div>
+            <div class="tl"><span class="tool">&#128295; search_text</span> <span class="dim">"callback" in src/auth/</span></div>
+            <div class="tl"><span class="ok">&#10003;</span> <span class="dim">3 matches</span></div>
             <div class="tgap"></div>
-            <div class="tl">Yes, great day to bike. Bring a light layer for the</div>
-            <div class="tl">morning chill.</div>
+            <div class="tl">Found the issue. The callback URL validation on line</div>
+            <div class="tl">142 uses a prefix match instead of exact match,</div>
+            <div class="tl">allowing path traversal in the redirect URI.</div>
+            <div class="tgap"></div>
+            <div class="tl"><span class="tool">&#128295; write_file</span> <span class="dim">src/auth/oauth.rs</span></div>
+            <div class="tl"><span class="ok">&#10003;</span> <span class="dim">Fixed: exact match on callback path</span></div>
+            <div class="tgap"></div>
+            <div class="tl"><span class="tool">&#128295; run_command</span> <span class="dim">cargo test auth::</span></div>
+            <div class="tl"><span class="ok">&#10003;</span> <span class="dim">12 tests passed</span></div>
             <div class="tgap"></div>
             <div class="tl"><span class="pr">&#10095; </span><span class="t-cursor"></span></div>
           </div>
@@ -1040,26 +817,26 @@
       <div class="container">
         <p class="section-tag">Architecture</p>
         <h2 class="section-heading">Layered by design.</h2>
-        <p class="section-sub" style="margin:0 auto 0;">Three clean layers. The kernel enforces safety invariants. The loadable layer provides intelligence. Shells are replaceable.</p>
+        <p class="section-sub" style="margin:0 auto 0;">Three clean layers. The kernel enforces safety. The loadable layer provides intelligence. Shells are replaceable.</p>
 
         <div class="arch-stack">
           <div class="arch-row">
             <div class="num">01</div>
             <div class="label">Shells</div>
-            <div class="detail">TUI &middot; Telegram &middot; HTTP API</div>
+            <div class="detail">Native App &middot; TUI &middot; HTTP API</div>
           </div>
           <div class="arch-row">
             <div class="num">02</div>
-            <div class="label">Loadable Layer</div>
-            <div class="detail">Skills &middot; Memory &middot; Providers</div>
+            <div class="label">Loadable</div>
+            <div class="detail">Skills &middot; Memory &middot; Providers &middot; Channels</div>
           </div>
           <div class="arch-row">
             <div class="num">03</div>
             <div class="label">Kernel</div>
-            <div class="detail">Loop &middot; Gates &middot; Policy &middot; Tools</div>
+            <div class="detail">Loop &middot; Gates &middot; Tripwire &middot; Ripcord</div>
           </div>
         </div>
-        <p class="arch-note">The agent can modify its own skills and behavior, but the safety rules that govern it are compiled into the binary and can never be changed at runtime.</p>
+        <p class="arch-note">The agent can modify its own skills and behavior. The safety kernel that governs it is compiled into the binary and cannot be changed at runtime — not by the user, not by the agent.</p>
       </div>
     </section>
 
@@ -1068,90 +845,139 @@
       <div class="container">
         <div>
           <p class="section-tag">Getting started</p>
-          <h2 class="section-heading">Five commands.<br>That's it.</h2>
-          <p class="section-sub">From zero to running in under a minute. All you need is Rust installed.</p>
+          <h2 class="section-heading">Download.<br>Setup. Go.</h2>
+          <p class="section-sub">The setup wizard handles everything. You just need an API key from Claude or ChatGPT.</p>
         </div>
-        <div class="timeline">
-          <div class="tl-item">
-            <h3>Install</h3>
-            <p><code>cargo install fawx</code> or clone the repo and build from source.</p>
+        <div class="steps">
+          <div class="step-item">
+            <h3>Download</h3>
+            <p>Grab the DMG from the download page. Drag Fawx to Applications. Done.</p>
           </div>
-          <div class="tl-item">
+          <div class="step-item">
             <h3>Setup</h3>
-            <p><code>fawx setup</code> runs an interactive wizard to connect your API key.</p>
+            <p>Launch Fawx. The setup wizard walks you through connecting your AI provider — Claude, ChatGPT, or bring your own API key.</p>
           </div>
-          <div class="tl-item">
+          <div class="step-item">
             <h3>Chat</h3>
-            <p><code>fawx chat</code> starts a quick conversation in your terminal.</p>
-          </div>
-          <div class="tl-item">
-            <h3>TUI</h3>
-            <p><code>fawx tui</code> launches the full terminal UI with real-time streaming.</p>
-          </div>
-          <div class="tl-item">
-            <h3>Go multi-channel</h3>
-            <p><code>fawx serve --http</code> enables the Telegram bot and HTTP API.</p>
+            <p>Start talking. Fawx handles the rest — tools, memory, multi-step reasoning. It gets better the more you use it.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- SKILLS -->
-    <section class="skills" id="skills">
+    <!-- FAQ -->
+    <section class="faq" id="faq">
       <div class="container">
-        <p class="section-tag">Ecosystem</p>
-        <h2 class="section-heading">Extend with WASM plugins.</h2>
-        <p class="section-sub">Every skill is a signed WebAssembly module that runs in a sandbox. Install community skills or write your own.</p>
+        <p class="section-tag">Questions</p>
+        <h2 class="section-heading" style="margin-bottom:48px;">FAQ</h2>
 
-        <div class="skills-row">
-          <div class="skill-tile">
-            <div class="tile-name">weather</div>
-            <div class="tile-desc">Forecasts and current conditions from multiple providers.</div>
-            <span class="tile-tag">built-in</span>
-          </div>
-          <div class="skill-tile">
-            <div class="tile-name">vision</div>
-            <div class="tile-desc">Describe images, read screenshots, and analyze visual content.</div>
-            <span class="tile-tag">built-in</span>
-          </div>
-          <div class="skill-tile">
-            <div class="tile-name">tts</div>
-            <div class="tile-desc">Text-to-speech synthesis using local or cloud voices.</div>
-            <span class="tile-tag">community</span>
-          </div>
-          <div class="skill-tile">
-            <div class="tile-name">browser</div>
-            <div class="tile-desc">Navigate pages, extract content, and fill forms headlessly.</div>
-            <span class="tile-tag">built-in</span>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            What AI models does Fawx support?
+            <span class="faq-chevron">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Fawx works with Claude (Anthropic), ChatGPT (OpenAI), and any OpenAI-compatible provider. You can use your existing Claude or ChatGPT subscription, or bring your own API key. Switch models mid-conversation with a single command.</div>
           </div>
         </div>
 
-        <div class="skills-footer">
-          <span>Install from the marketplace: <code>fawx install &lt;skill&gt;</code></span>
-          <span>All skills are cryptographically signed and verified before execution.</span>
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Is my data private?
+            <span class="faq-chevron">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Fawx runs entirely on your machine. Your files, conversations, and memory stay local. API calls go directly from your computer to the AI provider you choose — nothing routes through our servers. Credentials are encrypted at rest with AES-256-GCM.</div>
+          </div>
         </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            How is this different from ChatGPT or Claude?
+            <span class="faq-chevron">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">ChatGPT and Claude are conversational interfaces. Fawx is an agentic engine — it doesn't just respond, it plans multi-step actions, calls tools on your machine (files, shell, git, web), remembers across sessions, and works autonomously. It uses those same models as its intelligence layer, but wraps them in a real execution environment with safety boundaries.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            Do I need to be a developer?
+            <span class="faq-chevron">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Fawx is designed for developers and power users. The native macOS app provides a friendly GUI, but the tool system is built around code, files, and command execution. If you're comfortable in a terminal, you'll feel at home.</div>
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <button class="faq-question" onclick="toggleFaq(this)">
+            What does it cost?
+            <span class="faq-chevron">&#9662;</span>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">Fawx is free to download and use. You bring your own AI provider credentials — either through an existing Claude/ChatGPT subscription or your own API key. You pay the provider directly for model usage.</div>
+          </div>
+        </div>
+
       </div>
     </section>
 
   </main>
 
-  <!-- FOOTER -->
   <footer>
     <div class="footer-inner">
       <div class="footer-brand">
         <img src="fawx-new.png" alt="Fawx"> fawx
       </div>
       <ul class="footer-links">
-        <li><a href="https://github.com/fawxai/fawx">GitHub</a></li>
-        <li><a href="#">Docs</a></li>
-        <li><a href="#">Discord</a></li>
-        <li><a href="https://opensource.org/licenses/MIT">MIT License</a></li>
+        <li><a href="/download.html">Download</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/about.html">About</a></li>
       </ul>
     </div>
     <div class="footer-copy">
-      Open source software. Licensed under MIT. Built by the Fawx community.
+      &copy; 2026 Fawx AI. All rights reserved.
     </div>
   </footer>
+
+  <script>
+    // Rotating hero text
+    (function() {
+      const words = document.querySelectorAll('.hero-rotate-word');
+      let current = 0;
+
+      setInterval(function() {
+        words[current].classList.remove('active');
+        words[current].classList.add('exiting');
+
+        setTimeout(function() {
+          words[current].classList.remove('exiting');
+          current = (current + 1) % words.length;
+          words[current].classList.add('active');
+        }, 400);
+      }, 3000);
+    })();
+
+    // FAQ accordion
+    function toggleFaq(btn) {
+      const item = btn.parentElement;
+      const answer = item.querySelector('.faq-answer');
+      const isOpen = item.classList.contains('open');
+
+      // Close all
+      document.querySelectorAll('.faq-item.open').forEach(function(el) {
+        el.classList.remove('open');
+        el.querySelector('.faq-answer').style.maxHeight = null;
+      });
+
+      if (!isOpen) {
+        item.classList.add('open');
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+      }
+    }
+  </script>
 
 </body>
 </html>
