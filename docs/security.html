@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security: Fawx Docs</title>
+  <meta name="description" content="The kernel safety architecture. Capability boundaries, tripwire monitoring, and atomic rollback.">
+  <link rel="icon" type="image/png" href="/fawx-mono-nobg.png">
+  <link rel="apple-touch-icon" href="/fawx-new.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+    :root { --bg:#F5F0EB;--bg-raised:#EDE8E2;--bg-card:#FFFFFF;--border:rgba(0,0,0,0.08);--border-bright:rgba(0,0,0,0.15);--text:#1A1A1A;--text-dim:#5C5C5C;--text-faint:#8A8A8A;--accent:#D45E14;--accent-dim:rgba(212,94,20,0.08);--terminal-bg:#1E1E2E;--terminal-text:#CDD6F4;--font:'Outfit',-apple-system,BlinkMacSystemFont,sans-serif;--font-display:'Space Grotesk',-apple-system,BlinkMacSystemFont,sans-serif;--mono:'JetBrains Mono','SF Mono','Fira Code',monospace; }
+    html[data-theme="light"]{--bg:#F5F0EB;--bg-raised:#EDE8E2;--bg-card:#FFFFFF;--border:rgba(0,0,0,0.08);--border-bright:rgba(0,0,0,0.15);--text:#1A1A1A;--text-dim:#5C5C5C;--text-faint:#8A8A8A;--accent:#D45E14;--accent-dim:rgba(212,94,20,0.08)}
+    html[data-theme="light"] nav{background:rgba(245,240,235,0.85)}
+    html[data-theme="dark"]{--bg:#141210;--bg-raised:#1C1A17;--bg-card:#221F1C;--border:rgba(255,255,255,0.06);--border-bright:rgba(255,255,255,0.12);--text:#E8E2DB;--text-dim:#9C9590;--text-faint:#6B6560;--accent:#E8711A;--accent-dim:rgba(232,113,26,0.12)}
+    html[data-theme="dark"] nav{background:rgba(20,18,16,0.85)}
+    @media(prefers-color-scheme:dark){:root{--bg:#141210;--bg-raised:#1C1A17;--bg-card:#221F1C;--border:rgba(255,255,255,0.06);--border-bright:rgba(255,255,255,0.12);--text:#E8E2DB;--text-dim:#9C9590;--text-faint:#6B6560;--accent:#E8711A;--accent-dim:rgba(232,113,26,0.12)}nav{background:rgba(20,18,16,0.85)}}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(245,240,235,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-family:var(--mono);font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px}.nav-logo img{width:28px;height:28px}
+    .nav-links{display:flex;align-items:center;gap:36px;list-style:none}.nav-links a{text-decoration:none;color:var(--text-dim);font-size:0.88rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--text)}
+    .nav-cta{background:var(--text);color:var(--bg)!important;padding:8px 20px;border-radius:8px;font-size:0.85rem!important;font-weight:600!important;transition:opacity 0.2s}.nav-cta:hover{opacity:0.85;color:var(--bg)!important}
+    .theme-toggle{background:none;border:1px solid var(--border-bright);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--text-dim);transition:border-color 0.2s,color 0.2s}.theme-toggle:hover{border-color:var(--text-dim);color:var(--text)}
+
+    .doc-page{max-width:720px;margin:0 auto;padding:140px 32px 80px}
+    .doc-breadcrumb{font-family:var(--mono);font-size:0.75rem;color:var(--text-faint);margin-bottom:24px}.doc-breadcrumb a{color:var(--accent);text-decoration:none}.doc-breadcrumb a:hover{text-decoration:underline}
+    .doc-page h1{font-family:var(--font-display);font-size:2.4rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:12px}
+    .doc-page .doc-lead{font-size:1.1rem;color:var(--text-dim);line-height:1.7;margin-bottom:48px}
+    .doc-page h2{font-family:var(--font-display);font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;margin-top:48px;margin-bottom:16px;padding-top:24px;border-top:1px solid var(--border)}
+    .doc-page h2:first-of-type{border-top:none;padding-top:0}
+    .doc-page h3{font-size:1.05rem;font-weight:700;margin-top:32px;margin-bottom:8px}
+    .doc-page p{font-size:0.95rem;color:var(--text-dim);line-height:1.75;margin-bottom:16px}
+    .doc-page ul,.doc-page ol{padding-left:24px;margin-bottom:16px}
+    .doc-page li{font-size:0.95rem;color:var(--text-dim);line-height:1.75;margin-bottom:8px}
+    .doc-page li strong{color:var(--text)}
+    .doc-page code{font-family:var(--mono);font-size:0.85em;background:var(--accent-dim);padding:2px 6px;border-radius:4px}
+    .doc-page pre{background:var(--terminal-bg);border-radius:10px;padding:20px 24px;margin-bottom:20px;overflow-x:auto}
+    .doc-page pre code{background:none;padding:0;color:var(--terminal-text);font-size:0.82rem;line-height:1.7}
+    .doc-page .note{background:var(--accent-dim);border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:0.9rem;color:var(--text-dim);line-height:1.65}
+    .doc-page .note strong{color:var(--text)}
+
+    .layer-card{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:12px}
+    .layer-card .layer-num{font-family:var(--mono);font-size:0.72rem;font-weight:700;color:var(--accent);display:inline-block;padding:3px 8px;background:var(--accent-dim);border-radius:5px;margin-bottom:8px}
+    .layer-card h4{font-size:1rem;font-weight:700;margin-bottom:4px}
+    .layer-card p{margin-bottom:0;font-size:0.88rem}
+
+    footer{padding:48px 32px;border-top:1px solid var(--border)}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+    .footer-brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--text-dim)}.footer-brand img{width:22px;height:22px}
+    .footer-links{display:flex;gap:32px;list-style:none}.footer-links a{color:var(--text-faint);text-decoration:none;font-size:0.85rem;transition:color 0.2s}.footer-links a:hover{color:var(--text)}
+    .footer-copy{width:100%;text-align:center;margin-top:28px;padding-top:24px;border-top:1px solid var(--border);font-size:0.8rem;color:var(--text-faint)}
+    .doc-nav{display:flex;justify-content:space-between;margin-top:64px;padding-top:24px;border-top:1px solid var(--border)}.doc-nav a{font-size:0.88rem;color:var(--accent);text-decoration:none;font-weight:600}.doc-nav a:hover{text-decoration:underline}
+
+    @media(max-width:600px){.doc-page{padding:120px 20px 60px}.doc-page h1{font-size:1.8rem}.footer-inner{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+  <nav><div class="nav-inner"><a href="/" class="nav-logo"><img src="/fawx-mono-nobg.png" alt="Fawx"> fawx</a><ul class="nav-links"><li><a href="/#features">Features</a></li><li><a href="/#demo">Demo</a></li><li><a href="/docs/">Docs</a></li><li><a href="/about.html">About</a></li><li><a href="/download.html" class="nav-cta">Download</a></li><li><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><span class="theme-icon">☀</span></button></li></ul></div></nav>
+
+  <div class="doc-page">
+    <div class="doc-breadcrumb"><a href="/docs/">Docs</a> / Security</div>
+    <h1>Security</h1>
+    <p class="doc-lead">Three layers of safety. Capability boundaries define what the agent can do. Tripwires monitor for unexpected behavior. Ripcord rolls back when needed.</p>
+
+    <h2>The problem</h2>
+    <p>AI agents that can read files, run commands, and browse the web are powerful. They are also dangerous. Most tools handle this with one of two approaches: either they ask for permission on every action (slow, annoying, trains users to click "allow" without reading), or they run with no guardrails at all.</p>
+    <p>Fawx takes a different approach. The agent operates freely within defined boundaries. Safety enforcement is compiled into the binary, not layered on through prompts. The agent cannot see, modify, or bypass the safety kernel.</p>
+
+    <h2>Three-layer architecture</h2>
+
+    <div class="layer-card">
+      <span class="layer-num">Layer 1</span>
+      <h4>Capability boundaries</h4>
+      <p>Define what the agent can and cannot do. Actions outside boundaries get an immediate structured denial. The agent sees the denial and adjusts its approach. No waiting, no modal popups.</p>
+    </div>
+
+    <div class="layer-card">
+      <span class="layer-num">Layer 2</span>
+      <h4>Tripwire monitoring</h4>
+      <p>Silent boundaries within the capability space. When the agent crosses a tripwire (e.g. modifying a sensitive file, accessing a new directory for the first time), monitoring activates and a journal entry is created. The agent never knows.</p>
+    </div>
+
+    <div class="layer-card">
+      <span class="layer-num">Layer 3</span>
+      <h4>Ripcord rollback</h4>
+      <p>Atomic rollback of file and git operations from the tripwire activation point. If something goes wrong, you can undo everything the agent did since the boundary was crossed. Shell commands and API calls are audit-logged since they cannot be reversed.</p>
+    </div>
+
+    <h2>Capability mode</h2>
+    <p>The default permission mode. The agent receives a clear set of capabilities at session start:</p>
+    <pre><code>[permissions]
+mode = "capability"
+preset = "standard"</code></pre>
+
+    <p>When the agent tries an action outside its capabilities, it receives a structured response:</p>
+    <pre><code>{
+  "denied": true,
+  "action": "shell",
+  "reason": "Shell execution is not permitted under the current capability set.",
+  "suggestion": "Request a capability upgrade or use a different approach."
+}</code></pre>
+
+    <p>The agent sees this and adapts. No user intervention required. No blocking modal. No timeout.</p>
+
+    <h3>Prompt mode (opt-in)</h3>
+    <p>For users who prefer per-action approval, prompt mode is available:</p>
+    <pre><code>[permissions]
+mode = "prompt"</code></pre>
+    <p>In this mode, restricted actions pause and wait for explicit approval through the UI. This is useful during initial setup when you want to observe what the agent does before granting broader access.</p>
+
+    <h2>Tripwires</h2>
+    <p>Tripwires are boundaries within the capability space. They do not block actions. Instead, they silently activate monitoring when crossed.</p>
+
+    <h3>What triggers a tripwire</h3>
+    <ul>
+      <li>Modifying a file outside the current project directory.</li>
+      <li>Accessing a new directory for the first time in a session.</li>
+      <li>Running shell commands that match sensitive patterns (e.g. <code>rm -rf</code>, <code>chmod</code>, package installs).</li>
+      <li>Making network requests to new domains.</li>
+    </ul>
+
+    <h3>What happens on crossing</h3>
+    <ol>
+      <li>A journal entry is created with full context: what was attempted, what files were touched, the conversation state.</li>
+      <li>Monitoring escalates for the rest of the session. Subsequent actions in the same category are logged in detail.</li>
+      <li>The user receives a notification (configurable: silent, banner, or interrupt).</li>
+      <li>The agent continues working. It has no awareness that a tripwire was crossed.</li>
+    </ol>
+
+    <h2>Ripcord</h2>
+    <p>When a tripwire is crossed, Fawx creates a rollback point. If you decide the agent went wrong, you can pull the ripcord:</p>
+    <pre><code>fawx ripcord pull</code></pre>
+    <p>This atomically reverts all file changes and git operations since the tripwire activation point.</p>
+
+    <h3>What can be rolled back</h3>
+    <ul>
+      <li><strong>File writes:</strong> Reverted to pre-tripwire state.</li>
+      <li><strong>File deletes:</strong> Restored from backup.</li>
+      <li><strong>Git commits:</strong> Reset to pre-tripwire HEAD.</li>
+    </ul>
+
+    <h3>What cannot be rolled back</h3>
+    <ul>
+      <li><strong>Shell commands:</strong> Side effects (process starts, network requests) are logged but cannot be undone.</li>
+      <li><strong>API calls:</strong> External requests are audit-logged.</li>
+    </ul>
+    <p>For irreversible actions, the capability boundary (Layer 1) is the enforcement point. Actions that cannot be undone require explicit capability grants.</p>
+
+    <h3>Ripcord TTL</h3>
+    <p>Rollback points expire at the end of the session by default, with a 24-hour hard cap. This prevents unbounded storage growth while keeping rollback available for the duration of active work.</p>
+
+    <h2>The kernel</h2>
+    <p>All three layers are implemented in the safety kernel, a compiled Rust module that cannot be modified at runtime. The kernel:</p>
+    <ul>
+      <li>Intercepts every tool call before execution.</li>
+      <li>Evaluates capability permissions.</li>
+      <li>Checks tripwire conditions.</li>
+      <li>Creates rollback points.</li>
+      <li>Logs all security-relevant events.</li>
+    </ul>
+    <p>The agent communicates with the kernel through a defined interface. It cannot inspect, modify, or bypass the kernel. This separation is architectural, enforced by the Rust type system and module boundaries.</p>
+
+    <div class="note">
+      <strong>Why compiled safety matters:</strong> Prompt-based safety rules can be overridden by clever prompt injection. A compiled safety kernel operates at a layer the model cannot reach. The rules are code, and the agent has no API to change them.
+    </div>
+
+    <h2>Credential security</h2>
+    <p>API keys and OAuth tokens are encrypted at rest using AES-256-GCM. The encryption key is derived from a machine-specific secret. Credentials are decrypted only at the moment of use and never written to logs, conversation history, or temporary files.</p>
+
+    <div class="doc-nav">
+      <a href="/docs/fleet.html">← Fleet</a>
+      <span></span>
+    </div>
+  </div>
+
+  <footer><div class="footer-inner"><div class="footer-brand"><img src="/fawx-mono-nobg.png" alt="Fawx"> fawx</div><ul class="footer-links"><li><a href="/download.html">Download</a></li><li><a href="/docs/">Docs</a></li><li><a href="/about.html">About</a></li></ul></div><div class="footer-copy">&copy; 2026 Fawx AI. All rights reserved.</div></footer>
+
+  <script>
+    function toggleTheme(){var h=document.documentElement,c=h.getAttribute('data-theme'),i=document.querySelector('.theme-icon');if(c==='light'){h.setAttribute('data-theme','dark');i.textContent='☀';localStorage.setItem('fawx-theme','dark')}else{h.setAttribute('data-theme','light');i.textContent='☾';localStorage.setItem('fawx-theme','light')}}
+    (function(){var s=localStorage.getItem('fawx-theme'),i=document.querySelector('.theme-icon');if(s){document.documentElement.setAttribute('data-theme',s);i.textContent=s==='dark'?'☀':'☾'}else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches){document.documentElement.setAttribute('data-theme','dark');i.textContent='☀'}else{document.documentElement.setAttribute('data-theme','light');i.textContent='☾'}})();
+  </script>
+</body>
+</html>

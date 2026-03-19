@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fleet: Fawx Docs</title>
+  <meta name="description" content="Distribute agentic work across multiple machines over Tailscale.">
+  <link rel="icon" type="image/png" href="/fawx-mono-nobg.png">
+  <link rel="apple-touch-icon" href="/fawx-new.png">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+    :root { --bg:#F5F0EB;--bg-raised:#EDE8E2;--bg-card:#FFFFFF;--border:rgba(0,0,0,0.08);--border-bright:rgba(0,0,0,0.15);--text:#1A1A1A;--text-dim:#5C5C5C;--text-faint:#8A8A8A;--accent:#D45E14;--accent-dim:rgba(212,94,20,0.08);--terminal-bg:#1E1E2E;--terminal-text:#CDD6F4;--font:'Outfit',-apple-system,BlinkMacSystemFont,sans-serif;--font-display:'Space Grotesk',-apple-system,BlinkMacSystemFont,sans-serif;--mono:'JetBrains Mono','SF Mono','Fira Code',monospace; }
+    html[data-theme="light"]{--bg:#F5F0EB;--bg-raised:#EDE8E2;--bg-card:#FFFFFF;--border:rgba(0,0,0,0.08);--border-bright:rgba(0,0,0,0.15);--text:#1A1A1A;--text-dim:#5C5C5C;--text-faint:#8A8A8A;--accent:#D45E14;--accent-dim:rgba(212,94,20,0.08)}
+    html[data-theme="light"] nav{background:rgba(245,240,235,0.85)}
+    html[data-theme="dark"]{--bg:#141210;--bg-raised:#1C1A17;--bg-card:#221F1C;--border:rgba(255,255,255,0.06);--border-bright:rgba(255,255,255,0.12);--text:#E8E2DB;--text-dim:#9C9590;--text-faint:#6B6560;--accent:#E8711A;--accent-dim:rgba(232,113,26,0.12)}
+    html[data-theme="dark"] nav{background:rgba(20,18,16,0.85)}
+    @media(prefers-color-scheme:dark){:root{--bg:#141210;--bg-raised:#1C1A17;--bg-card:#221F1C;--border:rgba(255,255,255,0.06);--border-bright:rgba(255,255,255,0.12);--text:#E8E2DB;--text-dim:#9C9590;--text-faint:#6B6560;--accent:#E8711A;--accent-dim:rgba(232,113,26,0.12)}nav{background:rgba(20,18,16,0.85)}}
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased}
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(245,240,235,0.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
+    .nav-inner{max-width:1200px;margin:0 auto;padding:0 32px;height:64px;display:flex;align-items:center;justify-content:space-between}
+    .nav-logo{font-family:var(--mono);font-weight:700;font-size:1.2rem;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:10px}.nav-logo img{width:28px;height:28px}
+    .nav-links{display:flex;align-items:center;gap:36px;list-style:none}.nav-links a{text-decoration:none;color:var(--text-dim);font-size:0.88rem;font-weight:500;transition:color 0.2s}.nav-links a:hover{color:var(--text)}
+    .nav-cta{background:var(--text);color:var(--bg)!important;padding:8px 20px;border-radius:8px;font-size:0.85rem!important;font-weight:600!important;transition:opacity 0.2s}.nav-cta:hover{opacity:0.85;color:var(--bg)!important}
+    .theme-toggle{background:none;border:1px solid var(--border-bright);border-radius:8px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;color:var(--text-dim);transition:border-color 0.2s,color 0.2s}.theme-toggle:hover{border-color:var(--text-dim);color:var(--text)}
+
+    .doc-page{max-width:720px;margin:0 auto;padding:140px 32px 80px}
+    .doc-breadcrumb{font-family:var(--mono);font-size:0.75rem;color:var(--text-faint);margin-bottom:24px}.doc-breadcrumb a{color:var(--accent);text-decoration:none}.doc-breadcrumb a:hover{text-decoration:underline}
+    .doc-page h1{font-family:var(--font-display);font-size:2.4rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:12px}
+    .doc-page .doc-lead{font-size:1.1rem;color:var(--text-dim);line-height:1.7;margin-bottom:48px}
+    .doc-page h2{font-family:var(--font-display);font-size:1.4rem;font-weight:700;letter-spacing:-0.02em;margin-top:48px;margin-bottom:16px;padding-top:24px;border-top:1px solid var(--border)}
+    .doc-page h2:first-of-type{border-top:none;padding-top:0}
+    .doc-page h3{font-size:1.05rem;font-weight:700;margin-top:32px;margin-bottom:8px}
+    .doc-page p{font-size:0.95rem;color:var(--text-dim);line-height:1.75;margin-bottom:16px}
+    .doc-page ul,.doc-page ol{padding-left:24px;margin-bottom:16px}
+    .doc-page li{font-size:0.95rem;color:var(--text-dim);line-height:1.75;margin-bottom:8px}
+    .doc-page li strong{color:var(--text)}
+    .doc-page code{font-family:var(--mono);font-size:0.85em;background:var(--accent-dim);padding:2px 6px;border-radius:4px}
+    .doc-page pre{background:var(--terminal-bg);border-radius:10px;padding:20px 24px;margin-bottom:20px;overflow-x:auto}
+    .doc-page pre code{background:none;padding:0;color:var(--terminal-text);font-size:0.82rem;line-height:1.7}
+    .doc-page .note{background:var(--accent-dim);border-radius:10px;padding:16px 20px;margin-bottom:20px;font-size:0.9rem;color:var(--text-dim);line-height:1.65}
+    .doc-page .note strong{color:var(--text)}
+
+    .arch-diagram{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:32px;margin-bottom:20px;text-align:center;font-family:var(--mono);font-size:0.82rem;color:var(--text-dim);line-height:2}
+
+    footer{padding:48px 32px;border-top:1px solid var(--border)}
+    .footer-inner{max-width:1200px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+    .footer-brand{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-weight:700;font-size:1rem;color:var(--text-dim)}.footer-brand img{width:22px;height:22px}
+    .footer-links{display:flex;gap:32px;list-style:none}.footer-links a{color:var(--text-faint);text-decoration:none;font-size:0.85rem;transition:color 0.2s}.footer-links a:hover{color:var(--text)}
+    .footer-copy{width:100%;text-align:center;margin-top:28px;padding-top:24px;border-top:1px solid var(--border);font-size:0.8rem;color:var(--text-faint)}
+    .doc-nav{display:flex;justify-content:space-between;margin-top:64px;padding-top:24px;border-top:1px solid var(--border)}.doc-nav a{font-size:0.88rem;color:var(--accent);text-decoration:none;font-weight:600}.doc-nav a:hover{text-decoration:underline}
+
+    @media(max-width:600px){.doc-page{padding:120px 20px 60px}.doc-page h1{font-size:1.8rem}.footer-inner{flex-direction:column;text-align:center}}
+  </style>
+</head>
+<body>
+  <nav><div class="nav-inner"><a href="/" class="nav-logo"><img src="/fawx-mono-nobg.png" alt="Fawx"> fawx</a><ul class="nav-links"><li><a href="/#features">Features</a></li><li><a href="/#demo">Demo</a></li><li><a href="/docs/">Docs</a></li><li><a href="/about.html">About</a></li><li><a href="/download.html" class="nav-cta">Download</a></li><li><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme"><span class="theme-icon">☀</span></button></li></ul></div></nav>
+
+  <div class="doc-page">
+    <div class="doc-breadcrumb"><a href="/docs/">Docs</a> / Fleet</div>
+    <h1>Fleet</h1>
+    <p class="doc-lead">Distribute agentic work across multiple machines. One primary, multiple workers, connected over Tailscale.</p>
+
+    <h2>Overview</h2>
+    <p>Fleet lets a single Fawx agent coordinate work across machines on your network. The primary instance receives tasks and routes them to workers based on capability and availability. All communication happens over your Tailscale network with no external servers.</p>
+
+    <div class="arch-diagram">
+      <strong>Primary (laptop)</strong><br>
+      ↕ Tailscale ↕<br>
+      <strong>Worker (VPS)</strong> &nbsp; <strong>Worker (Mac Mini)</strong> &nbsp; <strong>Worker (desktop)</strong>
+    </div>
+
+    <h2>When to use fleet</h2>
+    <ul>
+      <li><strong>Long builds:</strong> Route compilation to a beefier machine while your laptop stays responsive.</li>
+      <li><strong>Parallel tasks:</strong> Run tests on one worker, lint on another, deploy on a third.</li>
+      <li><strong>Specialized hardware:</strong> Route GPU tasks to a machine with a GPU, or iOS builds to a Mac.</li>
+      <li><strong>Always-on agent:</strong> Keep a VPS worker running 24/7 while you close your laptop.</li>
+    </ul>
+
+    <h2>Setup</h2>
+
+    <h3>Prerequisites</h3>
+    <ul>
+      <li>Tailscale installed and authenticated on all machines.</li>
+      <li>Fawx installed on each machine.</li>
+      <li>All machines on the same Tailscale network (tailnet).</li>
+    </ul>
+
+    <h3>Configure the primary</h3>
+    <p>On your main machine, add worker nodes to the config:</p>
+    <pre><code>[fleet]
+role = "primary"
+
+[[fleet.workers]]
+name = "vps"
+address = "100.x.x.x"
+
+[[fleet.workers]]
+name = "mac-mini"
+address = "100.x.x.x"</code></pre>
+
+    <h3>Configure workers</h3>
+    <p>On each worker machine:</p>
+    <pre><code>[fleet]
+role = "worker"
+primary = "100.x.x.x"</code></pre>
+    <p>Start Fawx in worker mode:</p>
+    <pre><code>fawx serve --fleet-worker</code></pre>
+
+    <h2>Task routing</h2>
+    <p>When the agent spawns a subtask, the fleet orchestrator decides where to run it based on:</p>
+    <ul>
+      <li><strong>Capability tags:</strong> Workers declare what they can do (e.g. <code>gpu</code>, <code>macos</code>, <code>docker</code>).</li>
+      <li><strong>Current load:</strong> Tasks prefer idle workers.</li>
+      <li><strong>Locality:</strong> Tasks that need specific files prefer the machine where those files exist.</li>
+    </ul>
+
+    <h3>Capability tags</h3>
+    <pre><code>[fleet]
+role = "worker"
+capabilities = ["macos", "xcode", "gpu"]</code></pre>
+
+    <h2>Node commands</h2>
+    <p>Run commands on remote workers from the primary:</p>
+    <pre><code>fawx node run mac-mini "cargo build --release"
+fawx node run vps "docker compose up -d"</code></pre>
+    <p>Commands execute over SSH (auto-detected) or the Fawx fleet protocol. Output streams back in real time.</p>
+
+    <h2>Dashboard</h2>
+    <p>Monitor fleet status through the HTTP API or the native app:</p>
+    <pre><code># List workers and their status
+curl localhost:8400/v1/fleet/workers
+
+# View active tasks
+curl localhost:8400/v1/fleet/tasks</code></pre>
+    <p>The native app includes a fleet dashboard showing worker status, active tasks, and resource utilization.</p>
+
+    <div class="note">
+      <strong>Security:</strong> Fleet communication is encrypted end-to-end by Tailscale (WireGuard). Worker authentication uses the Tailscale identity of each machine. No additional credentials are needed.
+    </div>
+
+    <div class="doc-nav">
+      <a href="/docs/skills.html">← Skills</a>
+      <a href="/docs/security.html">Security →</a>
+    </div>
+  </div>
+
+  <footer><div class="footer-inner"><div class="footer-brand"><img src="/fawx-mono-nobg.png" alt="Fawx"> fawx</div><ul class="footer-links"><li><a href="/download.html">Download</a></li><li><a href="/docs/">Docs</a></li><li><a href="/about.html">About</a></li></ul></div><div class="footer-copy">&copy; 2026 Fawx AI. All rights reserved.</div></footer>
+
+  <script>
+    function toggleTheme(){var h=document.documentElement,c=h.getAttribute('data-theme'),i=document.querySelector('.theme-icon');if(c==='light'){h.setAttribute('data-theme','dark');i.textContent='☀';localStorage.setItem('fawx-theme','dark')}else{h.setAttribute('data-theme','light');i.textContent='☾';localStorage.setItem('fawx-theme','light')}}
+    (function(){var s=localStorage.getItem('fawx-theme'),i=document.querySelector('.theme-icon');if(s){document.documentElement.setAttribute('data-theme',s);i.textContent=s==='dark'?'☀':'☾'}else if(window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches){document.documentElement.setAttribute('data-theme','dark');i.textContent='☀'}else{document.documentElement.setAttribute('data-theme','light');i.textContent='☾'}})();
+  </script>
+</body>
+</html>
