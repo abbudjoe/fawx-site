@@ -334,6 +334,48 @@ Tools to document:
 
 ---
 
+## Design Inspiration: zo.computer
+
+Borrow these layout concepts from https://www.zo.computer/ (adapted for Fawx's local-first identity):
+
+### Rotating hero headline
+Instead of a static hero headline, cycle through use cases with a text animation:
+- "Reads your codebase."
+- "Calls tools autonomously."
+- "Remembers what it learns."
+- "Runs on your hardware."
+
+Keep the static tagline above or below ("An agentic AI engine built in Rust."), with the rotating text showing what it actually DOES. Simple CSS animation or minimal JS — no heavy libraries.
+
+### Feature cards with product screenshots
+Each major capability gets a card that includes a REAL screenshot or terminal capture, not just an icon and description. Show the product:
+- Terminal block showing a multi-tool conversation
+- Native macOS app screenshot (chat view)
+- WASM skill loading in action
+- Fleet dashboard or multi-machine setup
+
+The Zo site does this well — every feature section has an actual product image alongside the description. This builds credibility faster than bullet points.
+
+### FAQ section on landing page
+Add an accordion FAQ section on the landing page (not just in docs). Answer the obvious questions:
+- "What AI models does Fawx support?"
+- "Is my data private?"
+- "How is this different from ChatGPT / Claude?"
+- "Do I need to be a developer?"
+- "What does it cost?"
+
+Clean expand/collapse with minimal JS. The Zo site's FAQ is a good template.
+
+### Visual hierarchy pattern
+Follow Zo's section flow: big claim → supporting detail → product visual → next claim. Each section earns the reader's attention for the next one. Don't front-load features — lead with what it DOES for you, then explain how.
+
+### What NOT to borrow from Zo
+- Zo is cloud-first; Fawx is local-first. Invert the messaging: "Your AI, on your machine" not "Your AI in the cloud."
+- No testimonials section (no users yet). Replace with a vision/philosophy block or a "Built by" note.
+- No pricing table for launch. Add later when pricing is decided.
+
+---
+
 ## Copy Guidelines
 
 - **Tone:** Confident, technical, concise. Not marketing-speak. Fawx is for people who read man pages.
