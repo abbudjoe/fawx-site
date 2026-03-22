@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"
+     xmlns:sparkle="http://www.andymatuschak.net/xml-namespaces/sparkle"
+     xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Fawx</title>
+    <link>https://fawx.ai/appcast.xml</link>
+    <description>Fawx updates</description>
+    <language>en</language>
+    <!-- Entries are prepended by scripts/release.sh -->
+  </channel>
+</rss>
