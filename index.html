@@ -209,7 +209,7 @@
       max-width: 1200px;
       margin: 0 auto;
       display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
+      grid-template-columns: 1fr 1.1fr;
       gap: 80px;
       align-items: center;
       width: 100%;
@@ -309,6 +309,29 @@
       width: 340px;
       height: 340px;
       filter: drop-shadow(0 16px 48px rgba(212,94,20,0.12));
+    }
+
+    .hero-screenshot {
+      width: 100%;
+      max-width: 560px;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    /* Light theme: show dark app screenshot */
+    html[data-theme="light"] .hero-screenshot-dark { display: block; }
+    html[data-theme="light"] .hero-screenshot-light { display: none; }
+    /* Dark theme: show light app screenshot */
+    html[data-theme="dark"] .hero-screenshot-dark { display: none; }
+    html[data-theme="dark"] .hero-screenshot-light { display: block; }
+    /* System preference fallback */
+    @media (prefers-color-scheme: light) {
+      .hero-screenshot-dark { display: block; }
+      .hero-screenshot-light { display: none; }
+    }
+    @media (prefers-color-scheme: dark) {
+      .hero-screenshot-dark { display: none; }
+      .hero-screenshot-light { display: block; }
     }
 
     /* ─── FEATURES ─── */
@@ -711,6 +734,7 @@
       .hero-actions { justify-content: center; }
       .hero-visual { order: -1; }
       .hero-mascot { width: 220px; height: 220px; }
+      .hero-screenshot { max-width: 400px; }
       .bento { grid-template-columns: 1fr; }
       .bento-card.span-2 { grid-column: span 1; }
       .demo .container { grid-template-columns: 1fr; gap: 40px; }
@@ -738,6 +762,7 @@
       .hero-rotate-word.active { transform: translateX(-50%) translateY(0); }
       .hero-rotate-word.exiting { transform: translateX(-50%) translateY(-20px); }
       .hero-mascot { width: 180px; height: 180px; }
+      .hero-screenshot { max-width: 320px; }
       .features, .demo, .arch, .getting-started, .faq { padding: 80px 20px; }
       .footer-inner { flex-direction: column; text-align: center; }
     }
@@ -785,7 +810,8 @@
         </div>
       </div>
       <div class="hero-visual">
-        <img src="fawx-new.png" alt="Fawx" class="hero-mascot">
+        <img src="app-dark.jpg" alt="Fawx macOS App (Dark Mode)" class="hero-screenshot hero-screenshot-dark">
+        <img src="app-light.jpg" alt="Fawx macOS App (Light Mode)" class="hero-screenshot hero-screenshot-light">
       </div>
     </div>
   </header>
