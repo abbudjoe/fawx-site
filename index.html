@@ -318,6 +318,10 @@
       box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.06);
     }
 
+    /* Desktop: screenshots. Mobile: mascot. */
+    .hero-mobile-only { display: none; }
+    .hero-desktop-only { display: block; }
+
     /* Light theme: show dark app screenshot */
     html[data-theme="light"] .hero-screenshot-dark { display: block; }
     html[data-theme="light"] .hero-screenshot-light { display: none; }
@@ -734,7 +738,8 @@
       .hero-actions { justify-content: center; }
       .hero-visual { order: -1; }
       .hero-mascot { width: 220px; height: 220px; }
-      .hero-screenshot { max-width: 400px; }
+      .hero-mobile-only { display: block; }
+      .hero-desktop-only { display: none !important; }
       .bento { grid-template-columns: 1fr; }
       .bento-card.span-2 { grid-column: span 1; }
       .demo .container { grid-template-columns: 1fr; gap: 40px; }
@@ -762,7 +767,6 @@
       .hero-rotate-word.active { transform: translateX(-50%) translateY(0); }
       .hero-rotate-word.exiting { transform: translateX(-50%) translateY(-20px); }
       .hero-mascot { width: 180px; height: 180px; }
-      .hero-screenshot { max-width: 320px; }
       .features, .demo, .arch, .getting-started, .faq { padding: 80px 20px; }
       .footer-inner { flex-direction: column; text-align: center; }
     }
@@ -810,8 +814,9 @@
         </div>
       </div>
       <div class="hero-visual">
-        <img src="app-dark.jpg" alt="Fawx macOS App (Dark Mode)" class="hero-screenshot hero-screenshot-dark">
-        <img src="app-light.jpg" alt="Fawx macOS App (Light Mode)" class="hero-screenshot hero-screenshot-light">
+        <img src="fawx-new.png" alt="Fawx" class="hero-mascot hero-mobile-only">
+        <img src="app-dark.jpg" alt="Fawx macOS App (Dark Mode)" class="hero-screenshot hero-screenshot-dark hero-desktop-only">
+        <img src="app-light.jpg" alt="Fawx macOS App (Light Mode)" class="hero-screenshot hero-screenshot-light hero-desktop-only">
       </div>
     </div>
   </header>
