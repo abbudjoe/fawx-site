@@ -7,6 +7,17 @@
     <link>https://fawx.ai/appcast.xml</link>
     <description>Fawx updates</description>
     <language>en</language>
-    <!-- Entries are prepended by scripts/release.sh -->
+    <item>
+      <title>Version 1.2.0</title>
+      <sparkle:version>2</sparkle:version>
+      <sparkle:shortVersionString>1.2.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <pubDate>Tue, 24 Mar 2026 17:55:50 +0000</pubDate>
+      <enclosure
+        url="https://github.com/abbudjoe/fawx-site/releases/download/v1.2.0/Fawx.dmg"
+        sparkle:edSignature="Gn+XzlWuudc+mVRFeRrPBijK40KzfdKAtIP6Msg1tMnMtVlep/VLNOu9Fa0y9kpHMK00jnWxmTBC4a5YSyLbCQ=="
+        length="20513257"
+        type="application/octet-stream" />
+    </item>
   </channel>
 </rss>
