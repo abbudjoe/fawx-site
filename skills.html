@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Skills — Fawx</title>
+  <meta name="description" content="Browse sandboxed WASM skills for Fawx. Signed, capability-gated, zero trust by default.">
+  <link rel="icon" type="image/png" href="/fawx-mono-nobg.png">
+  <link rel="apple-touch-icon" href="/fawx-new.png">
+  <meta property="og:title" content="Fawx Skills Marketplace">
+  <meta property="og:description" content="Sandboxed WASM plugins for your AI agent. Signed, capability-gated, zero trust by default.">
+  <meta property="og:image" content="https://fawx.ai/fawx-new.png">
+  <meta property="og:url" content="https://fawx.ai/skills.html">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+
+    :root {
+      --bg: #F5F0EB; --bg-raised: #EDE8E2; --bg-card: #FFFFFF;
+      --border: rgba(0,0,0,0.08); --border-bright: rgba(0,0,0,0.15);
+      --text: #1A1A1A; --text-dim: #5C5C5C; --text-faint: #8A8A8A;
+      --accent: #D45E14; --accent-dim: rgba(212,94,20,0.08); --accent-glow: rgba(212,94,20,0.18);
+      --terminal-bg: #1E1E2E; --terminal-green: #A6E3A1; --terminal-yellow: #F9E2AF;
+      --terminal-text: #CDD6F4; --terminal-muted: #6C7086;
+      --cap-network: #3B82F6; --cap-storage: #8B5CF6; --cap-none: #22C55E;
+      --font: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+      --mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+    }
+
+    html[data-theme="light"] {
+      --bg: #F5F0EB; --bg-raised: #EDE8E2; --bg-card: #FFFFFF;
+      --border: rgba(0,0,0,0.08); --border-bright: rgba(0,0,0,0.15);
+      --text: #1A1A1A; --text-dim: #5C5C5C; --text-faint: #8A8A8A;
+      --accent: #D45E14; --accent-dim: rgba(212,94,20,0.08); --accent-glow: rgba(212,94,20,0.18);
+    }
+    html[data-theme="light"] nav { background: rgba(245,240,235,0.85); }
+
+    html[data-theme="dark"] {
+      --bg: #141210; --bg-raised: #1C1A17; --bg-card: #221F1C;
+      --border: rgba(255,255,255,0.06); --border-bright: rgba(255,255,255,0.12);
+      --text: #E8E2DB; --text-dim: #9C9590; --text-faint: #6B6560;
+      --accent: #E8711A; --accent-dim: rgba(232,113,26,0.12); --accent-glow: rgba(232,113,26,0.2);
+    }
+    html[data-theme="dark"] nav { background: rgba(20,18,16,0.85); }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #141210; --bg-raised: #1C1A17; --bg-card: #221F1C;
+        --border: rgba(255,255,255,0.06); --border-bright: rgba(255,255,255,0.12);
+        --text: #E8E2DB; --text-dim: #9C9590; --text-faint: #6B6560;
+        --accent: #E8711A; --accent-dim: rgba(232,113,26,0.12); --accent-glow: rgba(232,113,26,0.2);
+      }
+      nav { background: rgba(20,18,16,0.85); }
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font);
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      background: rgba(245,240,235,0.85);
+      backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-inner {
+      max-width: 1200px; margin: 0 auto; padding: 0 32px; height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      font-family: var(--mono); font-weight: 700; font-size: 1.2rem;
+      color: var(--text); text-decoration: none; display: flex; align-items: center; gap: 10px;
+    }
+    .nav-logo img { width: 28px; height: 28px; }
+    .nav-links { display: flex; align-items: center; gap: 36px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--text-dim); font-size: 0.88rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta {
+      background: var(--text); color: var(--bg) !important;
+      padding: 8px 20px; border-radius: 8px; font-size: 0.85rem !important; font-weight: 600 !important;
+    }
+    .nav-cta:hover { opacity: 0.85; color: var(--bg) !important; }
+    .theme-toggle {
+      background: none; border: 1px solid var(--border-bright); border-radius: 8px;
+      width: 36px; height: 36px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 1rem; color: var(--text-dim);
+    }
+    .mobile-toggle { display: none; background: none; border: none; font-size: 1.4rem; cursor: pointer; color: var(--text); }
+
+    /* PAGE */
+    .page { max-width: 1200px; margin: 0 auto; padding: 120px 32px 80px; }
+
+    .page-header { text-align: center; margin-bottom: 56px; }
+    .page-header h1 {
+      font-family: var(--font-display); font-size: 2.8rem; font-weight: 700;
+      letter-spacing: -0.02em; margin-bottom: 16px;
+    }
+    .page-header p { font-size: 1.1rem; color: var(--text-dim); max-width: 600px; margin: 0 auto 24px; }
+
+    /* SECURITY BANNER */
+    .security-banner {
+      background: var(--bg-card); border: 1px solid var(--border-bright);
+      border-radius: 16px; padding: 32px 40px; margin-bottom: 48px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    }
+    .security-item { text-align: center; }
+    .security-icon { font-size: 1.6rem; margin-bottom: 8px; }
+    .security-label { font-weight: 600; font-size: 0.9rem; margin-bottom: 4px; }
+    .security-desc { font-size: 0.78rem; color: var(--text-dim); line-height: 1.5; }
+
+    /* SEARCH */
+    .search-bar {
+      display: flex; gap: 12px; max-width: 500px; margin: 0 auto 48px;
+    }
+    .search-bar input {
+      flex: 1; padding: 12px 16px; border-radius: 10px;
+      border: 1px solid var(--border-bright); background: var(--bg-card);
+      font-family: var(--font); font-size: 0.95rem; color: var(--text);
+      outline: none; transition: border-color 0.2s;
+    }
+    .search-bar input:focus { border-color: var(--accent); }
+    .search-bar input::placeholder { color: var(--text-faint); }
+
+    /* SKILL GRID */
+    .skills-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 20px; margin-bottom: 64px;
+    }
+
+    .skill-card {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 28px; transition: border-color 0.2s, box-shadow 0.2s;
+      display: flex; flex-direction: column;
+    }
+    .skill-card:hover { border-color: var(--border-bright); box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+
+    .skill-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; }
+    .skill-icon { font-size: 1.8rem; }
+    .skill-size { font-family: var(--mono); font-size: 0.72rem; color: var(--text-faint); }
+
+    .skill-name { font-family: var(--mono); font-weight: 600; font-size: 1.05rem; margin-bottom: 6px; }
+    .skill-desc { font-size: 0.88rem; color: var(--text-dim); line-height: 1.6; margin-bottom: 16px; flex: 1; }
+
+    .skill-caps { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+    .cap-badge {
+      font-family: var(--mono); font-size: 0.7rem; font-weight: 500;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .cap-network { background: rgba(59,130,246,0.1); color: var(--cap-network); }
+    .cap-storage { background: rgba(139,92,246,0.1); color: var(--cap-storage); }
+    .cap-none { background: rgba(34,197,94,0.1); color: var(--cap-none); }
+
+    .skill-install {
+      background: var(--bg-raised); border-radius: 8px; padding: 10px 14px;
+      font-family: var(--mono); font-size: 0.78rem; color: var(--text-dim);
+      display: flex; align-items: center; justify-content: space-between;
+      cursor: pointer; transition: background 0.2s; user-select: all;
+    }
+    .skill-install:hover { background: var(--accent-dim); }
+    .skill-install .copy-icon { font-size: 0.85rem; opacity: 0.5; user-select: none; }
+
+    .skill-links { display: flex; gap: 12px; margin-top: 12px; }
+    .skill-links a {
+      font-size: 0.78rem; color: var(--text-faint); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .skill-links a:hover { color: var(--accent); }
+
+    /* AUTHOR CTA */
+    .author-section {
+      background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 48px; text-align: center; margin-bottom: 48px;
+    }
+    .author-section h2 { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin-bottom: 12px; }
+    .author-section p { color: var(--text-dim); max-width: 520px; margin: 0 auto 24px; font-size: 0.95rem; }
+
+    .author-steps {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+      max-width: 720px; margin: 0 auto 28px; text-align: center;
+    }
+    .author-step-num { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); font-weight: 700; margin-bottom: 4px; }
+    .author-step-text { font-size: 0.85rem; color: var(--text-dim); }
+
+    .author-link {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--text); color: var(--bg); padding: 12px 24px;
+      border-radius: 10px; font-weight: 600; font-size: 0.9rem;
+      text-decoration: none; transition: opacity 0.2s;
+    }
+    .author-link:hover { opacity: 0.85; }
+
+    /* WHY WASM */
+    .why-section {
+      background: var(--terminal-bg); border-radius: 16px; padding: 48px;
+      margin-bottom: 48px; color: var(--terminal-text);
+    }
+    .why-section h2 { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; margin-bottom: 24px; color: #fff; }
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .why-item { padding: 16px; border-radius: 10px; background: rgba(255,255,255,0.04); }
+    .why-label { font-family: var(--mono); font-size: 0.8rem; margin-bottom: 6px; }
+    .why-label-bad { color: #F38BA8; }
+    .why-label-good { color: var(--terminal-green); }
+    .why-text { font-size: 0.85rem; color: var(--terminal-muted); line-height: 1.6; }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border); padding: 40px 32px;
+      text-align: center; font-size: 0.85rem; color: var(--text-faint);
+    }
+    footer a { color: var(--text-dim); text-decoration: none; }
+    footer a:hover { color: var(--accent); }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .nav-links { display: none; flex-direction: column; position: absolute; top: 64px; left: 0; right: 0; background: var(--bg); padding: 16px 32px; border-bottom: 1px solid var(--border); }
+      .nav-links.open { display: flex; }
+      .mobile-toggle { display: block; }
+      .page-header h1 { font-size: 2rem; }
+      .security-banner { grid-template-columns: repeat(2, 1fr); padding: 24px; }
+      .skills-grid { grid-template-columns: 1fr; }
+      .why-grid { grid-template-columns: 1fr; }
+      .author-steps { grid-template-columns: 1fr; }
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+      background: var(--text); color: var(--bg); padding: 10px 24px; border-radius: 10px;
+      font-family: var(--mono); font-size: 0.82rem; font-weight: 500;
+      opacity: 0; transition: transform 0.3s, opacity 0.3s; pointer-events: none; z-index: 200;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <img src="fawx-mono-nobg.png" alt="Fawx"> fawx
+      </a>
+      <button class="mobile-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')" aria-label="Menu">&#9776;</button>
+      <ul class="nav-links">
+        <li><a href="/#features">Features</a></li>
+        <li><a href="/skills.html" class="active">Skills</a></li>
+        <li><a href="/docs/">Docs</a></li>
+        <li><a href="/about.html">About</a></li>
+        <li><a href="/download.html" class="nav-cta">Download</a></li>
+        <li><button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle light/dark">
+          <span class="theme-icon">☀</span>
+        </button></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="page">
+
+    <div class="page-header">
+      <h1>Skills</h1>
+      <p>Sandboxed WASM plugins for your agent. Every skill is signed, capability-gated, and runs in complete isolation.</p>
+    </div>
+
+    <div class="security-banner">
+      <div class="security-item">
+        <div class="security-icon">🔒</div>
+        <div class="security-label">Sandboxed</div>
+        <div class="security-desc">WASM isolation. No filesystem, no env vars, no process spawning.</div>
+      </div>
+      <div class="security-item">
+        <div class="security-icon">✍️</div>
+        <div class="security-label">Signed</div>
+        <div class="security-desc">Ed25519 signature verified before install. Tampered packages are rejected.</div>
+      </div>
+      <div class="security-item">
+        <div class="security-icon">🎯</div>
+        <div class="security-label">Capability-gated</div>
+        <div class="security-desc">Skills declare what they need. They get nothing more.</div>
+      </div>
+      <div class="security-item">
+        <div class="security-icon">📦</div>
+        <div class="security-label">Self-contained</div>
+        <div class="security-desc">No transitive dependencies. No supply chain to poison.</div>
+      </div>
+    </div>
+
+    <div class="search-bar">
+      <input type="text" id="skillSearch" placeholder="Search skills..." oninput="filterSkills(this.value)">
+    </div>
+
+    <div class="skills-grid" id="skillsGrid">
+
+      <div class="skill-card" data-name="weather" data-caps="network">
+        <div class="skill-top">
+          <div class="skill-icon">🌤️</div>
+          <div class="skill-size">113 KB</div>
+        </div>
+        <div class="skill-name">weather</div>
+        <div class="skill-desc">Current weather and 3-day forecasts via Open-Meteo. No API key required.</div>
+        <div class="skill-caps"><span class="cap-badge cap-network">network</span></div>
+        <div class="skill-install" onclick="copyInstall('weather')">fawx skill install weather <span class="copy-icon">📋</span></div>
+        <div class="skill-links"><a href="https://github.com/fawxai/weather">Source</a></div>
+      </div>
+
+      <div class="skill-card" data-name="calculator" data-caps="">
+        <div class="skill-top">
+          <div class="skill-icon">🧮</div>
+          <div class="skill-size">107 KB</div>
+        </div>
+        <div class="skill-name">calculator</div>
+        <div class="skill-desc">Evaluate mathematical expressions. Pure computation, no external access.</div>
+        <div class="skill-caps"><span class="cap-badge cap-none">sandboxed</span></div>
+        <div class="skill-install" onclick="copyInstall('calculator')">fawx skill install calculator <span class="copy-icon">📋</span></div>
+        <div class="skill-links"><a href="https://github.com/fawxai/calculator">Source</a></div>
+      </div>
+
+      <div class="skill-card" data-name="browser" data-caps="network">
+        <div class="skill-top">
+          <div class="skill-icon">🌐</div>
+          <div class="skill-size">124 KB</div>
+        </div>
+        <div class="skill-name">browser</div>
+        <div class="skill-desc">Web search via Brave Search API and page content fetching. Requires Brave API key.</div>
+        <div class="skill-caps"><span class="cap-badge cap-network">network</span></div>
+        <div class="skill-install" onclick="copyInstall('browser')">fawx skill install browser <span class="copy-icon">📋</span></div>
+        <div class="skill-links"><a href="https://github.com/fawxai/browser">Source</a></div>
+      </div>
+
+      <div class="skill-card" data-name="github" data-caps="network">
+        <div class="skill-top">
+          <div class="skill-icon">🐙</div>
+          <div class="skill-size">243 KB</div>
+        </div>
+        <div class="skill-name">github</div>
+        <div class="skill-desc">GitHub integration: create and manage PRs, issues, and comments via the GitHub API.</div>
+        <div class="skill-caps"><span class="cap-badge cap-network">network</span></div>
+        <div class="skill-install" onclick="copyInstall('github')">fawx skill install github <span class="copy-icon">📋</span></div>
+        <div class="skill-links"><a href="https://github.com/fawxai/github">Source</a></div>
+      </div>
+
+      <div class="skill-card" data-name="canvas" data-caps="">
+        <div class="skill-top">
+          <div class="skill-icon">📊</div>
+          <div class="skill-size">183 KB</div>
+        </div>
+        <div class="skill-name">canvas</div>
+        <div class="skill-desc">Render tables, charts, and documents as formatted text output.</div>
+        <div class="skill-caps"><span class="cap-badge cap-none">sandboxed</span></div>
+        <div class="skill-install" onclick="copyInstall('canvas')">fawx skill install canvas <span class="copy-icon">📋</span></div>
+        <div class="skill-links"><a href="https://github.com/fawxai/canvas">Source</a></div>
+      </div>
+
+      <div class="skill-card" data-name="vision" data-caps="network">
+        <div class="skill-top">
+          <div class="skill-icon">👁️</div>
+          <div class="skill-size">118 KB</div>
+        </div>
+        <div class="skill-name">vision</div>
+        <div class="skill-desc">Image analysis via Anthropic or OpenAI vision APIs. Requires provider API key.</div>
+        <div class="skill-caps"><span class="cap-badge cap-network">network</span></div>
+        <div class="skill-install" onclick="copyInstall('vision')">fawx skill install vision <span class="copy-icon">📋</span></div>
+        <div class="skill-links"><a href="https://github.com/fawxai/vision">Source</a></div>
+      </div>
+
+      <div class="skill-card" data-name="tts" data-caps="network">
+        <div class="skill-top">
+          <div class="skill-icon">🔊</div>
+          <div class="skill-size">113 KB</div>
+        </div>
+        <div class="skill-name">tts</div>
+        <div class="skill-desc">Text-to-speech via OpenAI's audio API. Multiple voices available.</div>
+        <div class="skill-caps"><span class="cap-badge cap-network">network</span></div>
+        <div class="skill-install" onclick="copyInstall('tts')">fawx skill install tts <span class="copy-icon">📋</span></div>
+        <div class="skill-links"><a href="https://github.com/fawxai/tts">Source</a></div>
+      </div>
+
+      <div class="skill-card" data-name="stt" data-caps="network">
+        <div class="skill-top">
+          <div class="skill-icon">🎙️</div>
+          <div class="skill-size">129 KB</div>
+        </div>
+        <div class="skill-name">stt</div>
+        <div class="skill-desc">Speech-to-text transcription via OpenAI Whisper API.</div>
+        <div class="skill-caps"><span class="cap-badge cap-network">network</span></div>
+        <div class="skill-install" onclick="copyInstall('stt')">fawx skill install stt <span class="copy-icon">📋</span></div>
+        <div class="skill-links"><a href="https://github.com/fawxai/stt">Source</a></div>
+      </div>
+
+      <div class="skill-card" data-name="scheduler" data-caps="storage">
+        <div class="skill-top">
+          <div class="skill-icon">⏰</div>
+          <div class="skill-size">96 KB</div>
+        </div>
+        <div class="skill-name">scheduler</div>
+        <div class="skill-desc">Cron-based scheduling, reminders, and recurring jobs with persistent storage.</div>
+        <div class="skill-caps"><span class="cap-badge cap-storage">storage</span></div>
+        <div class="skill-install" onclick="copyInstall('scheduler')">fawx skill install scheduler <span class="copy-icon">📋</span></div>
+        <div class="skill-links"><a href="https://github.com/fawxai/scheduler">Source</a></div>
+      </div>
+
+    </div>
+
+    <!-- WHY WASM -->
+    <div class="why-section">
+      <h2>Why WASM skills instead of pip install?</h2>
+      <div class="why-grid">
+        <div class="why-item">
+          <div class="why-label why-label-bad">pip install litellm</div>
+          <div class="why-text">Runs arbitrary Python at install time. Full access to filesystem, env vars, network. A poisoned package exfiltrates SSH keys, AWS creds, and shell history.</div>
+        </div>
+        <div class="why-item">
+          <div class="why-label why-label-good">fawx skill install weather</div>
+          <div class="why-text">WASM binary. No install-time code execution. Sandboxed at runtime. Can only access declared capabilities. Can't touch ~/.ssh, env vars, or open arbitrary connections.</div>
+        </div>
+        <div class="why-item">
+          <div class="why-label why-label-bad">Transitive dependencies</div>
+          <div class="why-text">Every package in the tree runs with full user privileges. One compromised dependency anywhere in the chain compromises everything.</div>
+        </div>
+        <div class="why-item">
+          <div class="why-label why-label-good">Self-contained binaries</div>
+          <div class="why-text">No dependency tree. What you install is what runs. No transitive supply chain to poison. Ed25519 signature verification catches tampering.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- AUTHOR CTA -->
+    <div class="author-section">
+      <h2>Build a skill</h2>
+      <p>Skills are Rust compiled to WebAssembly. The SDK is Apache 2.0. Ship a tool your agent can use in under 100 lines.</p>
+      <div class="author-steps">
+        <div>
+          <div class="author-step-num">01</div>
+          <div class="author-step-text">Write Rust, declare capabilities in manifest.toml</div>
+        </div>
+        <div>
+          <div class="author-step-num">02</div>
+          <div class="author-step-text">Compile to wasm32-unknown-unknown</div>
+        </div>
+        <div>
+          <div class="author-step-num">03</div>
+          <div class="author-step-text">Sign with your Ed25519 key, publish</div>
+        </div>
+      </div>
+      <a href="https://github.com/fawxai/fawx" class="author-link">View the SDK →</a>
+    </div>
+
+  </main>
+
+  <footer>
+    <p>© 2026 Tkrm Ltd. &nbsp;·&nbsp; <a href="/">Home</a> &nbsp;·&nbsp; <a href="/docs/">Docs</a> &nbsp;·&nbsp; <a href="https://github.com/fawxai/fawx">GitHub</a></p>
+  </footer>
+
+  <div class="toast" id="toast">Copied to clipboard</div>
+
+  <script>
+    function copyInstall(name) {
+      var text = 'fawx skill install ' + name;
+      navigator.clipboard.writeText(text).then(function() {
+        var toast = document.getElementById('toast');
+        toast.classList.add('show');
+        setTimeout(function() { toast.classList.remove('show'); }, 2000);
+      });
+    }
+
+    function filterSkills(query) {
+      var cards = document.querySelectorAll('.skill-card');
+      var q = query.toLowerCase();
+      cards.forEach(function(card) {
+        var name = card.getAttribute('data-name');
+        var desc = card.querySelector('.skill-desc').textContent.toLowerCase();
+        var caps = card.getAttribute('data-caps');
+        var match = name.indexOf(q) !== -1 || desc.indexOf(q) !== -1 || caps.indexOf(q) !== -1;
+        card.style.display = match ? '' : 'none';
+      });
+    }
+
+    function toggleTheme() {
+      var html = document.documentElement;
+      var icon = document.querySelector('.theme-icon');
+      var current = html.getAttribute('data-theme');
+      if (current === 'dark') {
+        html.setAttribute('data-theme', 'light');
+        icon.textContent = '☾';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.setAttribute('data-theme', 'dark');
+        icon.textContent = '☀';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    (function() {
+      var icon = document.querySelector('.theme-icon');
+      var saved = localStorage.getItem('theme');
+      if (saved) {
+        document.documentElement.setAttribute('data-theme', saved);
+        icon.textContent = saved === 'dark' ? '☀' : '☾';
+      } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        icon.textContent = '☀';
+      } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        icon.textContent = '☾';
+      }
+    })();
+  </script>
+
+</body>
+</html>
