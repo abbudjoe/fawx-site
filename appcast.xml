@@ -8,6 +8,18 @@
     <description>Fawx updates</description>
     <language>en</language>
     <item>
+      <title>Version 1.3.0</title>
+      <sparkle:version>4</sparkle:version>
+      <sparkle:shortVersionString>1.3.0</sparkle:shortVersionString>
+      <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+      <pubDate>Thu, 03 Apr 2026 12:16:00 +0000</pubDate>
+      <enclosure
+        url="https://github.com/abbudjoe/fawx-site/releases/download/v1.3.0/Fawx.dmg"
+        sparkle:edSignature="wLVmeQLgq8a//kMX35z+1U1rHKNXGgEwOMh7Y+GdAPKBv0xc/Xx1kO2k0eMOXFm9/89KUs0ffaaxdfrckgt6Ag=="
+        length="21043598"
+        type="application/octet-stream" />
+    </item>
+    <item>
       <title>Version 1.2.0</title>
       <sparkle:version>2</sparkle:version>
       <sparkle:shortVersionString>1.2.0</sparkle:shortVersionString>
