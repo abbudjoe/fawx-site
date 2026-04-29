@@ -106,31 +106,32 @@
 
     .section { padding: 80px 32px; }
     .section.alt { background: var(--bg-raised); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .section .container { display: flex; flex-direction: column; align-items: center; }
 
-    .section-tag { font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 12px; font-weight: 600; }
-    .section-heading { font-family: var(--font-display); font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 40px; }
+    .section-tag { font-family: var(--mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.15em; color: var(--accent); margin-bottom: 12px; font-weight: 600; text-align: center; }
+    .section-heading { font-family: var(--font-display); font-size: 2rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; margin-bottom: 40px; text-align: center; }
 
-    .steps { counter-reset: step; max-width: 640px; }
+    .steps { counter-reset: step; width: 100%; max-width: 640px; }
     .step-item { counter-increment: step; position: relative; padding-left: 48px; margin-bottom: 32px; }
     .step-item:last-child { margin-bottom: 0; }
     .step-item::before { content: counter(step); position: absolute; left: 0; top: 2px; width: 32px; height: 32px; border-radius: 8px; background: var(--accent-dim); color: var(--accent); font-family: var(--mono); font-size: 0.82rem; font-weight: 700; display: flex; align-items: center; justify-content: center; }
     .step-item h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
     .step-item p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.65; }
 
-    .includes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; max-width: 800px; }
+    .includes-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; width: 100%; max-width: 800px; }
     .include-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
     .include-item h4 { font-size: 0.92rem; font-weight: 700; margin-bottom: 4px; }
     .include-item p { font-size: 0.82rem; color: var(--text-dim); line-height: 1.6; }
 
-    .reqs-table { max-width: 640px; }
+    .reqs-table { width: 100%; max-width: 640px; }
     .req-row { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
     .req-row .label { color: var(--text-dim); }
     .req-row .value { font-weight: 600; }
 
-    .ios-note { max-width: 640px; margin-top: 48px; padding: 24px; background: var(--accent-dim); border-radius: 12px; font-size: 0.9rem; color: var(--text-dim); line-height: 1.65; }
+    .ios-note { width: 100%; max-width: 640px; margin-top: 48px; padding: 24px; background: var(--accent-dim); border-radius: 12px; font-size: 0.9rem; color: var(--text-dim); line-height: 1.65; }
     .ios-note strong { color: var(--text); }
 
-    .tui-note { max-width: 640px; margin-top: 32px; }
+    .tui-note { width: 100%; max-width: 640px; margin-top: 32px; }
     .tui-note h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
     .tui-note p { font-size: 0.88rem; color: var(--text-dim); line-height: 1.65; margin-bottom: 12px; }
     .tui-code { background: var(--terminal-bg); border-radius: 8px; padding: 14px 18px; font-family: var(--mono); font-size: 0.82rem; color: var(--terminal-text); }
